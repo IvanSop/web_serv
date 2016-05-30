@@ -8,7 +8,7 @@ module.exports = function(passport){
             passReqToCallback : true // allows us to pass back the entire request to the callback
         },
         function(req, username, password, done) {
-
+            //console.log("signupe =======");
             findOrCreateUser = function(){
                 // find a user in Mongo with provided username
                 User.findOne({ 'username' :  username }, function(err, user) {
@@ -20,19 +20,14 @@ module.exports = function(passport){
                     // already exists
                     if (user) {
                         console.log('User already exists with username: '+username);
-                        return done(null, false, req.flash('message','User Already Exists'));
+                        return done(null,false);
                     } else {
                         // if there is no user with that email
                         // create the user
                         var newUser = new User();
-
-                        // set the user's local credentials
                         newUser.username = username;
                         newUser.password = createHash(password);
-                        //newUser.friends = req.param('');
-                        newUser.firstName = req.param('firstName');
-                        newUser.lastName = req.param('lastName');
-                        newUser.level = 0; // gost 
+                        newUser.type = 0;
                         // save the user
                         newUser.save(function(err) {
                             if (err){

@@ -54,24 +54,52 @@ router.post('/login', function(req, res, next) {
   })(req, res, next);
 });
 
-	/* GET Registration Page */
-router.get('/register', function(req, res){
-	console.log("get /register");
-	//res.render('register',{message: req.flash('message')});
+
+router.post('/register', function(req, res, next) {
+  passport.authenticate('signup', function(err, user, info) {
+      console.log("err-------");
+      console.log(err);
+      console.log("user------");
+      console.log(user);
+      console.log("info------");
+      console.log(info);
+
+    if (err) {
+      return next(err);
+    }
+    if (!user) {
+      return res.status(401).json({
+        err: info
+      });
+    }
+    req.logIn(user, function(err) {
+      if (err) {
+        return res.status(500).json({
+          err: 'Could not log in user'
+        });
+      }
+      res.status(200).json({
+        status: 'Login scuccessful!'
+      });
+    });
+
+
+  })(req, res, next);
 });
 
-	/* Handle Registration POST */
-router.post('/register', passport.authenticate('signup', {
-	successRedirect: '/home',
-	failureRedirect: '/register',
-	failureFlash : true  
-}));
+// router.post('/register', function(req, res, next) {
+//   console.log("Ssssss");
+//   passport.authenticate('signup', function(err, user, info) {
+//     console.log("MARS");
+//   })
+// })
 
-	/* GET Home Page */
-router.get('/home', isAuthenticated, function(req, res){
-	console.log("get /home");
-	//res.render('home', { user: req.user });
-});
+// router.post('/register', passport.authenticate('signup', {
+//   successRedirect: '/',
+//   failureRedirect: '/register',
+//   failureFlash : true  
+// }));
+
 
 	/* Handle Logout */
 router.get('/logout', function(req, res) {

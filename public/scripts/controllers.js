@@ -4,6 +4,7 @@ angular.module('myApp').controller('loginController',
 
     $scope.login = function () {
 
+        
       // initial values
       $scope.error = false;
       $scope.disabled = true;
@@ -12,12 +13,14 @@ angular.module('myApp').controller('loginController',
       AuthService.login($scope.loginForm.username, $scope.loginForm.password)
         // handle success
         .then(function () {
+          console.log("SUCCESS login");
           $location.path('/');
           $scope.disabled = false;
           $scope.loginForm = {};
         })
         // handle error
         .catch(function () {
+          console.log("FAILURE login");
           $scope.error = true;
           $scope.errorMessage = "Invalid username and/or password";
           $scope.disabled = false;
@@ -49,7 +52,7 @@ angular.module('myApp').controller('registerController',
   function ($scope, $location, AuthService) {
 
     $scope.register = function () {
-
+      
       // initial values
       $scope.error = false;
       $scope.disabled = true;
@@ -58,12 +61,14 @@ angular.module('myApp').controller('registerController',
       AuthService.register($scope.registerForm.username, $scope.registerForm.password)
         // handle success
         .then(function () {
-          $location.path('/login');
+          console.log("SUCCESS register");
+          $location.path('/');
           $scope.disabled = false;
           $scope.registerForm = {};
         })
         // handle error
         .catch(function () {
+          console.log("FAILURE register");
           $scope.error = true;
           $scope.errorMessage = "Something went wrong!";
           $scope.disabled = false;

@@ -9,7 +9,7 @@ myApp.config(function ($routeProvider) {
     .when('/login', {
       templateUrl: '/login.html',
       controller: 'loginController',
-      access: {restricted: false}
+      access: {restricted: false, reverseRestricted: true}
     })
     .when('/logout', {
       controller: 'logoutController',
@@ -18,7 +18,7 @@ myApp.config(function ($routeProvider) {
     .when('/register', {
       templateUrl: 'register.html',
       controller: 'registerController',
-      access: {restricted: false}
+      access: {restricted: false, reverseRestricted: true}
     })
     .when('/one', {
       template: '<h1>This is page one!</h1>',
@@ -40,6 +40,10 @@ myApp.run(function ($rootScope, $location, $route, AuthService) {
       .then(function(){
         if (next.access.restricted && !AuthService.isLoggedIn()){
           $location.path('/login');
+          $route.reload();
+        }
+        if (next.access.reverseRestricted && AuthService.isLoggedIn()) {
+          $location.path('/');
           $route.reload();
         }
       });
