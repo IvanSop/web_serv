@@ -4,15 +4,21 @@ angular.module('myApp').factory('AuthService',
 
     // create user variable
     var user = null;
-
+    var errMsg = 'aaa';
     // return available functions for use in the controllers
     return ({
       isLoggedIn: isLoggedIn,
       getUserStatus: getUserStatus,
       login: login,
       logout: logout,
-      register: register
+      register: register,
+      getErrMsg: getErrMsg
     });
+
+    function getErrMsg() {
+      
+      return errMsg;
+    }
 
     function isLoggedIn() {
       if(user) {
@@ -101,17 +107,22 @@ angular.module('myApp').factory('AuthService',
         // handle success
         .success(function (data, status) {
           if(status === 200 && data.status){
+            //console.log(data);
             deferred.resolve();
           } else {
+            errMsg = data.err;
             deferred.reject();
           }
         })
         // handle error
         .error(function (data) {
+          //console.log(data);
+          errMsg = data.err;
           deferred.reject();
         });
 
       // return promise object
+      
       return deferred.promise;
 
     }

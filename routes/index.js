@@ -3,17 +3,22 @@ var router = express.Router();
 var User = require('../models/user');
 var bCrypt = require('bcrypt-nodejs');
 var path = require('path');
-
+var Project = require('../models/project');
 
 
 var isAuthenticated = function (req, res, next) {
 	// if user is authenticated in the session, call the next() to call the next request handler 
 	// Passport adds this method to request object. A middleware is allowed to add properties to
 	// request and response objects
-	if (req.isAuthenticated())
+
+  if (req.isAuthenticated())
 		return next();
 	// if the user is not authenticated then redirect him to the login page
 	res.redirect('/');
+}
+
+var isAdmin = function (req, res, next) {
+  //if (req.isAuthenticated && )
 }
 
 
@@ -69,7 +74,7 @@ router.post('/register', function(req, res, next) {
     }
     if (!user) {
       return res.status(401).json({
-        err: info
+        err: 'User already exists?'
       });
     }
     req.logIn(user, function(err) {
@@ -108,6 +113,7 @@ router.get('/logout', function(req, res) {
 });
 
 router.get('/status', function(req, res) {
+  
   if (!req.isAuthenticated()) {
     return res.status(200).json({
       status: false
@@ -118,9 +124,32 @@ router.get('/status', function(req, res) {
   });
 });
 
+router.post('/createProject', function(req,res) {
+  console.log("/createProject");
+  console.log(req.body);
+  var proj = new Project();
+  proj.name = req.body.name;
+  proj.save(function(err, data) {
+    if (err) {
+    res.status(500).json({
+      ret: "not OK"
+    })  
+      return console.error(err);
+    }
+    res.status(200).json({
+      ret: "OK"
+    })
+    console.log("OL");
+  })
+});
 
-
-
+router.post('/getAllProjects', function(req,res) {
+  console.log("/getAllProjects");
+  Project.find({}, function(err, data) {
+    console.log({"data" : data });
+    res.send({"data" : data } );
+  })
+})
 
 	return router;
 }

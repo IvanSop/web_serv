@@ -13,14 +13,14 @@ angular.module('myApp').controller('loginController',
       AuthService.login($scope.loginForm.username, $scope.loginForm.password)
         // handle success
         .then(function () {
-          console.log("SUCCESS login");
+          //console.log("SUCCESS login");
           $location.path('/');
           $scope.disabled = false;
           $scope.loginForm = {};
         })
         // handle error
         .catch(function () {
-          console.log("FAILURE login");
+          //console.log("FAILURE login");
           $scope.error = true;
           $scope.errorMessage = "Invalid username and/or password";
           $scope.disabled = false;
@@ -61,20 +61,65 @@ angular.module('myApp').controller('registerController',
       AuthService.register($scope.registerForm.username, $scope.registerForm.password)
         // handle success
         .then(function () {
-          console.log("SUCCESS register");
+          //console.log("SUCCESS register");
           $location.path('/');
           $scope.disabled = false;
           $scope.registerForm = {};
         })
         // handle error
         .catch(function () {
-          console.log("FAILURE register");
+          //console.log("FAILURE register");
+
           $scope.error = true;
-          $scope.errorMessage = "Something went wrong!";
+          $scope.errorMessage = AuthService.getErrMsg();//"Something went wrong!";
           $scope.disabled = false;
           $scope.registerForm = {};
         });
 
     };
 
+}]);
+
+angular.module('myApp').controller('projectController',
+  ['$scope', '$http', '$timeout', 
+  function($scope, $http, $timeout) {
+
+    
+    $scope.idSelectedItem = null;
+    $scope.setSelected = function (idSelectedItem) {
+      console.log(idSelectedItem)
+      $scope.idSelectedItem = idSelectedItem;
+    };
+
+
+
+    $scope.allProjects = [];
+
+    $scope.getAllProjects = function () {
+      $http.post("/getAllProjects")
+      .then(function(response) {
+        $scope.allProjects = response.data.data;
+        //
+      },function(response) {
+        //
+      }); 
+    }
+      
+    $scope.getAllProjects();
+
+    $scope.createProject = function () {
+      console.log($scope.project);
+      $timeout(function() { $scope.showMessage = false; }, 1000);
+      $http.post("/createProject", $scope.project)
+      .then(function(response) {
+        $scope.allProjects.push(angular.copy($scope.project));
+        $scope.status = response.data.ret;
+        $scope.showMessage = true;
+        console.log(response.data.ret);
+      },function(response) {
+        $scope.status = response.data.ret;
+        $scope.showMessage = true;
+        console.log("err");
+      });
+    };
 }]);

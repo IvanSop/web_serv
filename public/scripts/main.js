@@ -28,6 +28,10 @@ myApp.config(function ($routeProvider) {
       template: '<h1>This is page two!</h1>',
       access: {restricted: false}
     })
+    .when('/project', {
+      templateUrl: '/project.html',
+      access: {restricted: true}
+    })
     .otherwise({
       redirectTo: '/'
     });
