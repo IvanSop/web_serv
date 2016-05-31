@@ -12,8 +12,16 @@ angular.module('myApp').factory('AuthService',
       login: login,
       logout: logout,
       register: register,
-      getErrMsg: getErrMsg
+      getErrMsg: getErrMsg,
+      isAdmin: isAdmin
     });
+
+    function isAdmin() {
+      if (user.type == 1) {
+        return true;
+      }
+      return false;
+    }
 
     function getErrMsg() {
       
@@ -33,7 +41,8 @@ angular.module('myApp').factory('AuthService',
       // handle success
       .success(function (data) {
         if(data.status){
-          user = true;
+          user = data.status;
+          console.log(user);
         } else {
           user = false;
         }
@@ -55,7 +64,7 @@ angular.module('myApp').factory('AuthService',
         // handle success
         .success(function (data, status) {
           if(status === 200 && data.status){
-            user = true;
+            user = data.status;
             deferred.resolve();
           } else {
             user = false;

@@ -14,11 +14,26 @@ var isAuthenticated = function (req, res, next) {
   if (req.isAuthenticated())
 		return next();
 	// if the user is not authenticated then redirect him to the login page
-	res.redirect('/');
+	res.status(403).json({
+    err: "Forbidden!!"
+  });
 }
 
 var isAdmin = function (req, res, next) {
-  //if (req.isAuthenticated && )
+  if (req.user.type == 1) {
+    return next();
+  }
+  res.status(403).json({
+    err: "Forbidden!!"
+  });
+}
+
+// strips everything except username and type from user (dont want to send hash to client)
+var stripUser = function(user) {
+  var strippedUser = {};
+  strippedUser.username = user.username;
+  strippedUser.type = user.type;
+  return strippedUser;
 }
 
 
@@ -52,9 +67,13 @@ router.post('/login', function(req, res, next) {
           err: 'Could not log in user'
         });
       }
+      console.log("Stripped user");
+      console.log(stripUser(user));
       res.status(200).json({
-        status: 'Login scuccessful!'
+        status: stripUser(user)
       });
+      //console.log("LOGIN _______");
+      //console.log(user);
     });
   })(req, res, next);
 });
@@ -62,13 +81,6 @@ router.post('/login', function(req, res, next) {
 
 router.post('/register', function(req, res, next) {
   passport.authenticate('signup', function(err, user, info) {
-      console.log("err-------");
-      console.log(err);
-      console.log("user------");
-      console.log(user);
-      console.log("info------");
-      console.log(info);
-
     if (err) {
       return next(err);
     }
@@ -113,18 +125,19 @@ router.get('/logout', function(req, res) {
 });
 
 router.get('/status', function(req, res) {
-  
   if (!req.isAuthenticated()) {
     return res.status(200).json({
       status: false
     });
   }
+  console.log("req.user ===============");
+  console.log(req.user.type);
   res.status(200).json({
-    status: true
+    status: stripUser(req.user)
   });
 });
 
-router.post('/createProject', function(req,res) {
+router.post('/createProject',isAuthenticated, isAdmin, function(req,res) {
   console.log("/createProject");
   console.log(req.body);
   var proj = new Project();

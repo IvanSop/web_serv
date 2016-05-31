@@ -81,10 +81,10 @@ angular.module('myApp').controller('registerController',
 }]);
 
 angular.module('myApp').controller('projectController',
-  ['$scope', '$http', '$timeout', 
-  function($scope, $http, $timeout) {
+  ['$scope', '$http', '$timeout', 'AuthService', 
+  function($scope, $http, $timeout, AuthService) {
 
-    
+    $scope.isAdmin = AuthService.isAdmin();
     $scope.idSelectedItem = null;
     $scope.setSelected = function (idSelectedItem) {
       console.log(idSelectedItem)
@@ -117,7 +117,7 @@ angular.module('myApp').controller('projectController',
         $scope.showMessage = true;
         console.log(response.data.ret);
       },function(response) {
-        $scope.status = response.data.ret;
+        $scope.status = response.data.err;
         $scope.showMessage = true;
         console.log("err");
       });
