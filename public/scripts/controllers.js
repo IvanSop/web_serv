@@ -84,9 +84,17 @@ angular.module('myApp').controller('projectController',
   ['$scope', '$http', '$timeout', 'AuthService', '$filter',
   function($scope, $http, $timeout, AuthService, $filter) {
 
+    // this is for adding user as member on project
     $scope.userToAdd = "";
-    $scope.addUser = function () {
-        $scope.selectedProject.assigned_members.push($scope.userToAdd);
+    // now its generic add elemnt to array
+    $scope.addUser = function (array, element) {
+        //$scope.selectedProject.assigned_members.push($scope.userToAdd);
+        // add if that user exists
+        var found = $filter('filter')($scope.allUsers, {username: element}, true);
+        // add only if its not already added
+        if (array.indexOf(element) == -1 && found.length) {
+          array.push(element);
+        }
     }
     // select and show details of project
     $scope.showDetails = function(name) {
@@ -101,38 +109,54 @@ angular.module('myApp').controller('projectController',
       }
     }
 
-    // removes user from list of assigned members on project
-    $scope.removeUser = function(list, user) {
+    // removes item from list, is used for removing users from project and for removing projects
+    $scope.removeFromList = function(list, user) {
       list.splice(list.indexOf(user), 1);
     }
 
     // check if user is admin, used not to show certain content
     $scope.isAdmin = AuthService.isAdmin();
     
-    // for selecting project in list, makes it red
+    // for selecting project in list, makes it red, FIXME: when name is changed, it dissapears
     $scope.idSelectedItem = null;
     $scope.setSelected = function (idSelectedItem) {
       //console.log(idSelectedItem)
       $scope.idSelectedItem = idSelectedItem;
     };
 
+    // called on edit btn click, will also send data to server FIXME
     $scope.editClick = function() {
-
-      //console.log($scope.allUsers);
-      console.log($scope.allProjects);
-      console.log("Old obj: ", $scope.selectedProject);
-
       $scope.selectedProject.name = $scope.selectedProjectNew.name;
-      
-      //console.log("New obj: ", $scope.selectedProjectNew);
+      //console.log($scope.selectedProject)
+      $http.post("/updateProject", {project: $scope.selectedProject})
+      .then(function(response) {
+        console.log("then: ", response.data.data);
+      },
+      function(response) {
+        console.log("errpr", response.data.data);
+      })
+    }
+
+    $scope.deleteProject = function() {
+        $http.post("/deleteProject", {project: $scope.selectedProject})
+        .then(function(response) {
+          // remove from local list
+          $scope.removeFromList($scope.allProjects, $scope.selectedProject);
+          $scope.selectedProject = undefined;
+        },
+        function(response) {
+
+        });
+        
     }
 
 
-
+    // these are objects, not strings
     $scope.allProjects = [];
+    // aslo objects
     $scope.allUsers = [];
 
-    // gettin all projects from API FIXME add check for admin, user shoulntd know this
+    // gettin all projects from API FIXME add check for admin, user shoulntd know this, there should be separate function that gets only projects where user is assigned
     $scope.getAllProjects = function () {
       $http.post("/getAllProjects")
       .then(function(response) {
@@ -144,7 +168,7 @@ angular.module('myApp').controller('projectController',
       }); 
     }
      
-    // gets all users from api, FIXME add check for admin, user shoulntd know this 
+    // gets all users from api, FIXME add check for admin, user shoulntd know this
     $scope.getAllUsers = function () {
       $http.post("/getAllUsers")
       .then(function(response) {
@@ -153,16 +177,17 @@ angular.module('myApp').controller('projectController',
       })
     }
 
-     // call get all projects on load  
+     // call get all projects and users on load  
     $scope.getAllProjects();
     $scope.getAllUsers();
     
-    // create new project, add it to list and send it to server also
+    // create new project, add it to list and send it to server 
     $scope.createProject = function () {
-      console.log($scope.project);
       $timeout(function() { $scope.showMessage = false; }, 1000);
       $http.post("/createProject", $scope.project)
       .then(function(response) {
+        // add to local list
+        $scope.project.assigned_members = [];
         $scope.allProjects.push(angular.copy($scope.project));
         $scope.status = response.data.ret;
         $scope.showMessage = true;

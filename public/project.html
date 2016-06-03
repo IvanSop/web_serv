@@ -28,17 +28,21 @@
 	<br>
 	
 	<!-- edit project form -->
-	<form>
-		Name: <input type="text" ng-model="selectedProjectNew.name">
+	<form ng-show="!(selectedProject == undefined)">
+		Name: <input ng-disabled="{{!isAdmin}}" type="text" ng-model="selectedProjectNew.name">
 		<div>Assigned members:</div>
 		<ul>
-			<li ng-repeat="member in selectedProject.assigned_members">{{member}} <a ng-click="removeUser(selectedProject.assigned_members, member)">Remove</a></li>
+			<li ng-repeat="member in selectedProject.assigned_members">{{member}} <a ng-show="{{isAdmin}}" ng-click="removeUser(selectedProject.assigned_members, member)">Remove</a></li>
 		</ul>
 		<br>
-		Add user: <input type="text" ng-model = "userToAdd" typeahead="user.username as (user.username) for user in allUsers | filter:{'username': $viewValue}">
-		<input type="button" value="Add" ng-click="addUser()">
+		<div ng-show="{{isAdmin}}">
+			Add user: <input type="text" ng-model = "userToAdd" typeahead="user.username as (user.username) for user in allUsers | filter:{'username': $viewValue}">
+			<input type="button" value="Add" ng-click="addUser(selectedProject.assigned_members, userToAdd)"> 
+		</div>
+			<br>
+		<input type="button" ng-show="isAdmin" value="Edit" ng-click="editClick()">
 		<br>
-		<input type="button" value="Edit" ng-click="editClick()">
+		<input type="button" value="Delete project" ng-click="deleteProject()">
 	</form>
 	 {{userToAdd}}
 </div>

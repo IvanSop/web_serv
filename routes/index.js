@@ -144,6 +144,7 @@ router.post('/createProject',isAuthenticated, isAdmin, function(req,res) {
   //console.log(req.body);
   var proj = new Project();
   proj.name = req.body.name;
+  proj.assigned_members = [];
   proj.save(function(err, data) {
     if (err) {
     res.status(500).json({
@@ -178,6 +179,25 @@ router.post('/getAllUsers', isAuthenticated, isAdmin, function(req, res) {
     res.send(data);
   });
 });
+
+
+// edit a project
+router.post('/updateProject', isAuthenticated, isAdmin, function(req, res) {
+  console.log("/updateProject");
+  ProjectHandler.updateProject(req.body.project, function(data) {
+    console.log(data)
+    res.send(data);
+  })
+})
+
+//delete project
+router.post('/deleteProject', isAuthenticated, isAdmin, function(req, res) {
+  console.log("/deleteProject");
+  ProjectHandler.deleteProject(req.body.project, function(data) {
+    console.log(data);
+    res.send(data);
+  })
+})
 
 	return router;
 }
