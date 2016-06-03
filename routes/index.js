@@ -4,8 +4,8 @@ var User = require('../models/user');
 var bCrypt = require('bcrypt-nodejs');
 var path = require('path');
 var Project = require('../models/project');
-
-
+var ProjectHandler = require('../db_handlers/project_handler');
+var UserHandler = require('../db_handlers/user_handler');
 var isAuthenticated = function (req, res, next) {
 	// if user is authenticated in the session, call the next() to call the next request handler 
 	// Passport adds this method to request object. A middleware is allowed to add properties to
@@ -124,22 +124,24 @@ router.get('/logout', function(req, res) {
 	res.redirect('/');
 });
 
+// send user status, false if not logged in, object of user if logged in
 router.get('/status', function(req, res) {
   if (!req.isAuthenticated()) {
     return res.status(200).json({
       status: false
     });
   }
-  console.log("req.user ===============");
-  console.log(req.user.type);
+  // console.log("req.user ===============");
+  // console.log(req.user.type);
   res.status(200).json({
     status: stripUser(req.user)
   });
 });
 
+// creates project and saves it to db
 router.post('/createProject',isAuthenticated, isAdmin, function(req,res) {
   console.log("/createProject");
-  console.log(req.body);
+  //console.log(req.body);
   var proj = new Project();
   proj.name = req.body.name;
   proj.save(function(err, data) {
@@ -156,13 +158,26 @@ router.post('/createProject',isAuthenticated, isAdmin, function(req,res) {
   })
 });
 
-router.post('/getAllProjects', function(req,res) {
+// gets all projects from database FIXME: put isAdmin also?
+router.post('/getAllProjects',isAuthenticated, function(req,res) {
   console.log("/getAllProjects");
-  Project.find({}, function(err, data) {
-    console.log({"data" : data });
-    res.send({"data" : data } );
+  ProjectHandler.getAllProjects(function(data){
+    console.log(data);
+    res.send(data);
   })
-})
+
+  // Project.find({}, function(err, data) {
+  //   res.send({"data" : data});
+  // }) 
+});
+
+// gets all users, will be needed when admin wants to add someone to project
+router.post('/getAllUsers', isAuthenticated, isAdmin, function(req, res) {
+  console.log("/getAllUsers");
+  UserHandler.getAllUsers(function(data) {
+    res.send(data);
+  });
+});
 
 	return router;
 }

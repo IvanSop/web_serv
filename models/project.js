@@ -7,7 +7,7 @@ var User = require('../models/user');
 
 
 var Project = new mongoose.Schema({
-	assigned_members: [{type: mongoose.Schema.Types.ObjectId, ref:'User'}], // 
+	assigned_members: [{type: String, ref:'User'}], // FIXME better objectID ?
 	name: String
 	
 });

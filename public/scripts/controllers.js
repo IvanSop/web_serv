@@ -81,32 +81,83 @@ angular.module('myApp').controller('registerController',
 }]);
 
 angular.module('myApp').controller('projectController',
-  ['$scope', '$http', '$timeout', 'AuthService', 
-  function($scope, $http, $timeout, AuthService) {
+  ['$scope', '$http', '$timeout', 'AuthService', '$filter',
+  function($scope, $http, $timeout, AuthService, $filter) {
 
+    $scope.userToAdd = "";
+    $scope.addUser = function () {
+        $scope.selectedProject.assigned_members.push($scope.userToAdd);
+    }
+    // select and show details of project
+    $scope.showDetails = function(name) {
+      var found = $filter('filter')($scope.allProjects, {name: name}, true);
+      if (found.length) {
+             $scope.selectedProject = found[0];
+             // make a copy, when we want to edit it
+             $scope.selectedProjectNew = angular.copy($scope.selectedProject);
+             //console.log($scope.selectedProject);
+      } else {
+             $scope.selectedProject = 'Not found';
+      }
+    }
+
+    // removes user from list of assigned members on project
+    $scope.removeUser = function(list, user) {
+      list.splice(list.indexOf(user), 1);
+    }
+
+    // check if user is admin, used not to show certain content
     $scope.isAdmin = AuthService.isAdmin();
+    
+    // for selecting project in list, makes it red
     $scope.idSelectedItem = null;
     $scope.setSelected = function (idSelectedItem) {
-      console.log(idSelectedItem)
+      //console.log(idSelectedItem)
       $scope.idSelectedItem = idSelectedItem;
     };
+
+    $scope.editClick = function() {
+
+      //console.log($scope.allUsers);
+      console.log($scope.allProjects);
+      console.log("Old obj: ", $scope.selectedProject);
+
+      $scope.selectedProject.name = $scope.selectedProjectNew.name;
+      
+      //console.log("New obj: ", $scope.selectedProjectNew);
+    }
 
 
 
     $scope.allProjects = [];
+    $scope.allUsers = [];
 
+    // gettin all projects from API FIXME add check for admin, user shoulntd know this
     $scope.getAllProjects = function () {
       $http.post("/getAllProjects")
       .then(function(response) {
         $scope.allProjects = response.data.data;
         //
+        //console.log($scope.allProjects);
       },function(response) {
         //
       }); 
     }
-      
-    $scope.getAllProjects();
+     
+    // gets all users from api, FIXME add check for admin, user shoulntd know this 
+    $scope.getAllUsers = function () {
+      $http.post("/getAllUsers")
+      .then(function(response) {
+        $scope.allUsers = response.data.data;
+       
+      })
+    }
 
+     // call get all projects on load  
+    $scope.getAllProjects();
+    $scope.getAllUsers();
+    
+    // create new project, add it to list and send it to server also
     $scope.createProject = function () {
       console.log($scope.project);
       $timeout(function() { $scope.showMessage = false; }, 1000);

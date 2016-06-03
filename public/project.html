@@ -20,10 +20,30 @@
 
 	<div>
 		<ul>
-			<li ng-repeat="proj in allProjects" ng-click="setSelected(proj.name)" ng-class="{myselected: proj.name === idSelectedItem}">{{proj.name}}</li>
+			<li ng-repeat="proj in allProjects" ng-click="setSelected(proj.name); showDetails(proj.name)" ng-class="{myselected: proj.name === idSelectedItem}">{{proj.name}}</li>
 		</ul>
-	<div>
+	</div>
+
+	<br>
+	<br>
+	
+	<!-- edit project form -->
+	<form>
+		Name: <input type="text" ng-model="selectedProjectNew.name">
+		<div>Assigned members:</div>
+		<ul>
+			<li ng-repeat="member in selectedProject.assigned_members">{{member}} <a ng-click="removeUser(selectedProject.assigned_members, member)">Remove</a></li>
+		</ul>
+		<br>
+		Add user: <input type="text" ng-model = "userToAdd" typeahead="user.username as (user.username) for user in allUsers | filter:{'username': $viewValue}">
+		<input type="button" value="Add" ng-click="addUser()">
+		<br>
+		<input type="button" value="Edit" ng-click="editClick()">
+	</form>
+	 {{userToAdd}}
 </div>
+
+
 
 <br>
 <br>
