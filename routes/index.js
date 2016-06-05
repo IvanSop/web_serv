@@ -142,6 +142,15 @@ router.get('/status', function(req, res) {
 router.post('/createProject',isAuthenticated, isAdmin, function(req,res) {
   console.log("/createProject");
   //console.log(req.body);
+  ProjectHandler.projectExists(req.body.name, function(data) {
+    // if exists
+    if (data) {
+      res.status(406).json({
+        ret: "Project with that name already exists"
+      })
+      return;
+    }
+
   var proj = new Project();
   proj.name = req.body.name;
   proj.assigned_members = [];
@@ -158,6 +167,12 @@ router.post('/createProject',isAuthenticated, isAdmin, function(req,res) {
     console.log("OL");
   })
 });
+
+
+
+  })
+
+
 
 // gets all projects from database FIXME: put isAdmin also?
 router.post('/getAllProjects',isAuthenticated, function(req,res) {
@@ -184,6 +199,7 @@ router.post('/getAllUsers', isAuthenticated, isAdmin, function(req, res) {
 // edit a project
 router.post('/updateProject', isAuthenticated, isAdmin, function(req, res) {
   console.log("/updateProject");
+  console.log(req.body.project)
   ProjectHandler.updateProject(req.body.project, function(data) {
     console.log(data)
     res.send(data);

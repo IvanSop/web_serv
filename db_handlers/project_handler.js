@@ -17,5 +17,10 @@ module.exports = {
 		Project.findOneAndRemove({_id: project._id}, function(err, data) {
 			callback({"data": data});
 		})
+	},
+	projectExists: function(project, callback) {
+		Project.findOne({name: project}, function(err, data) {
+			callback(data);
+		})
 	}
 }

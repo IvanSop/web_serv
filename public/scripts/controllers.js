@@ -81,8 +81,8 @@ angular.module('myApp').controller('registerController',
 }]);
 
 angular.module('myApp').controller('projectController',
-  ['$scope', '$http', '$timeout', 'AuthService', '$filter',
-  function($scope, $http, $timeout, AuthService, $filter) {
+  ['$scope', '$http', '$timeout', 'AuthService', '$filter', 'ProjectService',
+  function($scope, $http, $timeout, AuthService, $filter, ProjectService) {
 
     // this is for adding user as member on project
     $scope.userToAdd = "";
@@ -98,6 +98,7 @@ angular.module('myApp').controller('projectController',
     }
     // select and show details of project
     $scope.showDetails = function(name) {
+      // good way to find objects in array by property
       var found = $filter('filter')($scope.allProjects, {name: name}, true);
       if (found.length) {
              $scope.selectedProject = found[0];
@@ -124,78 +125,77 @@ angular.module('myApp').controller('projectController',
       $scope.idSelectedItem = idSelectedItem;
     };
 
-    // called on edit btn click, will also send data to server FIXME
+    // called on edit btn click, FIXME: no check if new project name already exists TODO: show something like success msg or err on callback
+    // this could be called whenever a change is made so you dont have to click 'edit' btn to send changes to server, TODO
     $scope.editClick = function() {
       $scope.selectedProject.name = $scope.selectedProjectNew.name;
-      //console.log($scope.selectedProject)
-      $http.post("/updateProject", {project: $scope.selectedProject})
+      ProjectService.editProject($scope.selectedProject)
       .then(function(response) {
-        console.log("then: ", response.data.data);
-      },
-      function(response) {
-        console.log("errpr", response.data.data);
-      })
+        console.log(response);
+      }, function(response) {
+        console.log(response);
+      });
     }
 
     $scope.deleteProject = function() {
-        $http.post("/deleteProject", {project: $scope.selectedProject})
+        ProjectService.deleteProject($scope.selectedProject)
         .then(function(response) {
-          // remove from local list
+          // delete from local list
           $scope.removeFromList($scope.allProjects, $scope.selectedProject);
           $scope.selectedProject = undefined;
-        },
-        function(response) {
-
+        }, function(response) {
+          console.log("err removing project");
         });
         
     }
 
 
-    // these are objects, not strings
+    // these are objects
     $scope.allProjects = [];
     // aslo objects
     $scope.allUsers = [];
 
-    // gettin all projects from API FIXME add check for admin, user shoulntd know this, there should be separate function that gets only projects where user is assigned
-    $scope.getAllProjects = function () {
-      $http.post("/getAllProjects")
-      .then(function(response) {
-        $scope.allProjects = response.data.data;
-        //
-        //console.log($scope.allProjects);
-      },function(response) {
-        //
-      }); 
-    }
-     
-    // gets all users from api, FIXME add check for admin, user shoulntd know this
-    $scope.getAllUsers = function () {
-      $http.post("/getAllUsers")
-      .then(function(response) {
-        $scope.allUsers = response.data.data;
-       
-      })
-    }
+    // call get all projects and users on load  
+    ProjectService.getAllProjects()
+    .then(function(response) {
+      $scope.allProjects = response;
+    }, function(response) {
+      // on failure
+    });
+    //$scope.getAllProjects();
+    // FIXME: only for admin ?
+    AuthService.getAllUsers()
+    .then(function(response) {
+      $scope.allUsers = response;
+    }, function(response) {
+      // on failure
+    });
 
-     // call get all projects and users on load  
-    $scope.getAllProjects();
-    $scope.getAllUsers();
+    //$scope.getAllUsers();
     
     // create new project, add it to list and send it to server 
     $scope.createProject = function () {
-      $timeout(function() { $scope.showMessage = false; }, 1000);
-      $http.post("/createProject", $scope.project)
+      // timeout for error message
+      $timeout(function() { $scope.showMessage = false; }, 1000); 
+      // check if exists in local list, Maybe should be below to check server first but probably not
+      var found = $filter('filter')($scope.allProjects, {name: $scope.project.name}, true);
+      if (found.length) {
+        $scope.status = 'Project with that name already existss';
+        console.log($scope.allProjects)
+        console.log($scope.project);
+        $scope.showMessage = true;
+        return;
+      }
+      // sending it to api     
+      ProjectService.createProject($scope.project)
       .then(function(response) {
-        // add to local list
         $scope.project.assigned_members = [];
         $scope.allProjects.push(angular.copy($scope.project));
-        $scope.status = response.data.ret;
+        $scope.status = response;
         $scope.showMessage = true;
-        console.log(response.data.ret);
-      },function(response) {
-        $scope.status = response.data.err;
+      }, function(response) {
+        $scope.status = response;
         $scope.showMessage = true;
-        console.log("err");
-      });
+      })
     };
 }]);

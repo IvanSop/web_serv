@@ -13,7 +13,8 @@ angular.module('myApp').factory('AuthService',
       logout: logout,
       register: register,
       getErrMsg: getErrMsg,
-      isAdmin: isAdmin
+      isAdmin: isAdmin,
+      getAllUsers: getAllUsers
     });
 
     function isAdmin() {
@@ -134,6 +135,19 @@ angular.module('myApp').factory('AuthService',
       
       return deferred.promise;
 
+    }
+
+    // deosnt really belong here, gets all users from API, FIXME add check for admin, user shoulntd know this
+    function getAllUsers() {
+       var promise = $http.post("/getAllUsers")
+      .then(function(response) {
+        return response.data.data;
+      
+      },function(response) {
+        // on failure
+      });
+
+      return promise; 
     }
 
 }]);

@@ -32,7 +32,7 @@
 		Name: <input ng-disabled="{{!isAdmin}}" type="text" ng-model="selectedProjectNew.name">
 		<div>Assigned members:</div>
 		<ul>
-			<li ng-repeat="member in selectedProject.assigned_members">{{member}} <a ng-show="{{isAdmin}}" ng-click="removeUser(selectedProject.assigned_members, member)">Remove</a></li>
+			<li ng-repeat="member in selectedProject.assigned_members">{{member}} <a ng-show="{{isAdmin}}" ng-click="removeFromList(selectedProject.assigned_members, member)">Remove</a></li>
 		</ul>
 		<br>
 		<div ng-show="{{isAdmin}}">
@@ -44,7 +44,6 @@
 		<br>
 		<input type="button" value="Delete project" ng-click="deleteProject()">
 	</form>
-	 {{userToAdd}}
 </div>
 
 
