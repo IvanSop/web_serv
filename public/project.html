@@ -1,52 +1,63 @@
 <!DOCTYPE html>
 <html>
 <head>
-<link rel="stylesheet" type="text/css" href="stylesheets/style.css">
-	<title>project</title>
+    <link rel="stylesheet" type="text/css" href="stylesheets/style.css">
+    <title>project</title>
 </head>
 <body>
 
-<div ng-controller="projectController">
-	<form class="form" ng-submit="createProject()">
-		<div class="form-group" ng-show={{isAdmin}}>
-      		<label>Project name</label>
-			<input type="text" class="form-control" name="project_name" ng-model="project.name" required>
-		</div>	
-		<div>
-			<button type="submit" ng-show={{isAdmin}} class="btn btn-default">Create</button>
-		</div>
-		<div ng-model="status" ng-show="showMessage">{{status}}</div>
-	</form>
+<div style="border: 1px solid red" ng-controller="projectController as pc">
+    <form class="form" ng-submit="pc.createProject()">
+        <div class="form-group" ng-show={{pc.isAdmin}}>
+            <label>Project name</label>
+            <input type="text" class="form-control" name="project_name" ng-model="pc.project.name" required>
+        </div>
+        <div>
+            <button type="submit" ng-show={{pc.isAdmin}} class="btn btn-default">Create</button>
+        </div>
+        <div ng-model="status" ng-show="pc.showMessage">{{pc.status}}</div>
+    </form>
 
-	<div>
-		<ul>
-			<li ng-repeat="proj in allProjects" ng-click="setSelected(proj.name); showDetails(proj.name)" ng-class="{myselected: proj.name === idSelectedItem}">{{proj.name}}</li>
-		</ul>
-	</div>
+    <div>
+        <ul>
+            <li ng-repeat="proj in pc.allProjects" ng-click="pc.setSelected(proj.name); pc.showDetails(proj.name)"
+                ng-class="{myselected: proj.name === pc.idSelectedItem}">{{proj.name}}
+            </li>
+        </ul>
+    </div>
 
-	<br>
-	<br>
-	
-	<!-- edit project form -->
-	<form ng-show="!(selectedProject == undefined)">
-		Name: <input ng-disabled="{{!isAdmin}}" type="text" ng-model="selectedProjectNew.name">
-		<div>Assigned members:</div>
-		<ul>
-			<li ng-repeat="member in selectedProject.assigned_members">{{member}} <a ng-show="{{isAdmin}}" ng-click="removeFromList(selectedProject.assigned_members, member)">Remove</a></li>
-		</ul>
-		<br>
-		<div ng-show="{{isAdmin}}">
-			Add user: <input type="text" ng-model = "userToAdd" typeahead="user.username as (user.username) for user in allUsers | filter:{'username': $viewValue}">
-			<input type="button" value="Add" ng-click="addUser(selectedProject.assigned_members, userToAdd)"> 
-		</div>
-			<br>
-		<input type="button" ng-show="isAdmin" value="Edit" ng-click="editClick()">
-		<br>
-		<input type="button" value="Delete project" ng-click="deleteProject()">
-	</form>
+    <br>
+    <br>
+
+    <!-- edit project form -->
+    <form ng-show="!(pc.selectedProject == undefined)">
+        Name: <input ng-disabled="{{!pc.isAdmin}}" type="text" ng-model="pc.selectedProjectNew.name">
+        <div>Assigned members:</div>
+        <ul>
+            <li ng-repeat="member in pc.selectedProject.assigned_members">{{member}} <a ng-show="{{pc.isAdmin}}"
+                                                                                        ng-click="pc.removeFromList(pc.selectedProject.assigned_members, member)">Remove</a>
+            </li>
+        </ul>
+        <br>
+        <div ng-show="{{pc.isAdmin}}">self
+            Add user: <input type="text" ng-model="pc.userToAdd"
+                             typeahead="user.username as (user.username) for user in pc.allUsers | filter:{'username': $viewValue}">
+            <input type="button" value="Add" ng-click="pc.addUser(pc.selectedProject.assigned_members, pc.userToAdd)">
+        </div>
+        <br>
+        <!--<div ng-controller="taskController as tc">-->
+
+        <!--</div>-->
+        <br>
+        <input type="button" ng-show="pc.isAdmin" value="Edit" ng-click="pc.editClick()">
+        <br>
+        <input type="button" ng-show="pc.isAdmin" value="Delete project" ng-click="pc.deleteProject()">
+    </form>
 </div>
 
-
+<br>
+<br>
+<div ng-include="'task.html'"></div>
 
 <br>
 <br>

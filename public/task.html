@@ -1,0 +1,45 @@
+<div style="border: 1px solid green" ng-controller="taskController as tc">
+
+    <ul>
+        <li ng-repeat="task in tc.allTasks">task.name</li>
+    </ul>
+    <!-- Edit form-->
+    <form id="taskForm">
+        <label for="selectProject">Project:</label>
+        <select id="selectProject">
+            <option value="">-- Select project --</option>
+            <option ng-repeat="project in tc.allProjects" value="project.name">{{project.name}}</option>
+        </select>
+        <br>
+        <label for="taskTitle">Title</label>
+        <input type="text" id="taskTitle" ng-model="tc.task.title" required>
+        <br>
+        <label for="taskDescription">Description</label> <br>
+        <textarea id="taskDescription" cols="40" rows="5" ng-model="tc.task.description"></textarea>
+        <br>
+        <label for="selectPriority">Priority</label>
+        <select id="selectPriority" ng-model="tc.task.priority">
+            <option value="">-- Select priority --</option>
+            <option ng-repeat="priority in tc.allTaskPriorities" value="{{priority.key}}">{{priority.value}}</option>
+        </select>
+        <br>
+        <label for="taskStatus">Status</label>
+        <select id="taskStatus" ng-model="tc.task.status">
+            <option value="">-- Select status --</option>
+            <option ng-repeat="status in tc.allTaskStatuses" value="{{status.key}}">{{status.value}}</option>
+        </select>
+        <br>
+        <label for="taskCreator">Created by:</label>
+        <span id="taskCreator" ng-bind="tc.task.creator">asdf</span>
+        <br>
+        <label for="taskTarget">Assigned to</label>
+        <select id="taskTarget" ng-model="tc.task.target">
+            <option value="">-- Select user --</option>
+            <option ng-repeat="user in tc.allUsers" value="{{user.username}}">{{user.username}}</option>
+        </select>
+        <br>
+        {{tc.task}}
+        <br>
+
+    </form>
+</div>
