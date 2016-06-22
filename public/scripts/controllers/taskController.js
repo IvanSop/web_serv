@@ -16,7 +16,11 @@ angular.module('myApp').controller('taskController',
                 self.me = {}
 
                 self.allTasks = [];
+                
+                self.isAdmin = AuthService.isAdmin()
 
+                // for coloring selected task
+                self.idSelectedItem = null;
 
                 AuthService.getUserStatus()
                     .then(function (data) {
@@ -70,6 +74,19 @@ angular.module('myApp').controller('taskController',
             self.init();
 
 
+            self.newClick = function () {
+                self.task = {}
+                self.task.creator = angular.copy(self.me)
+            }
+
+            // for coloring selected task
+            self.setSelected = function (idSelectedItem) {
+                //console.log(idSelectedItem)
+                self.idSelectedItem = idSelectedItem;
+            };
+
+
+
             self.createTask = function () {
                TaskService.createTask(angular.copy(self.task))
                    .then(function(response) {
@@ -111,7 +128,15 @@ angular.module('myApp').controller('taskController',
             }
                 
 
-
+            self.partlyEdit = function () {
+                self.selectedTask = self.task;
+                TaskService.partlyEdit(self.selectedTask)
+                    .then(function (response) {
+                        console.log(response);
+                    }, function (response) {
+                        console.log(response);
+                    })
+            }
 
 
 

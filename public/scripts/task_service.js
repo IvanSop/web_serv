@@ -13,7 +13,8 @@ angular.module('myApp').factory('TaskService',
                 getAllTasks: getAllTasks,
                 getAllTaskList: getAllTaskList,
                 editTask: editTask,
-                deleteTask: deleteTask
+                deleteTask: deleteTask,
+                partlyEdit: partlyEdit
             });
 
             function getAllTaskList() {
@@ -74,6 +75,16 @@ angular.module('myApp').factory('TaskService',
                     })
                 return promise;
 
+            }
+            
+            function partlyEdit(task) {
+                var promise = $http.post('/partlyEdit', {task : task})
+                    .then(function (response) {
+                        return response.data.data;
+                    }, function (response) {
+                        return response.data.data;
+                    })
+                return promise;
             }
             
             function deleteTask(task) {

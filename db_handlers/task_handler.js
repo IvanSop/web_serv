@@ -34,5 +34,11 @@ module.exports = {
         Task.findOneAndRemove({_id: task._id}, function (err, data) {
             callback({ "data" : data })
         })
+    },
+    partlyEdit: function (task, callback) {
+        Task.findOneAndUpdate({_id: task._id}, {$set: {priority: task.priority, status: task.status, target: task.target}}, function (err, data) {
+            console.log(data);
+            callback({"data": data});
+        })
     }
 }

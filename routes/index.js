@@ -9,6 +9,7 @@ var UserHandler = require('../db_handlers/user_handler');
 var cnst = require('../models/CONSTANTS');
 var TaskHandler = require('../db_handlers/task_handler');
 var Task = require('../models/task');
+var Comment = require('../models/comment');
 
 var isAuthenticated = function (req, res, next) {
     // if user is authenticated in the session, call the next() to call the next request handler 
@@ -189,7 +190,7 @@ module.exports = function (passport) {
     });
 
 // gets all users, will be needed when admin wants to add someone to project
-    router.post('/getAllUsers', isAuthenticated, isAdmin, function (req, res) {
+    router.post('/getAllUsers', isAuthenticated, function (req, res) {
         console.log("/getAllUsers");
         UserHandler.getAllUsers(function (data) {
             res.send(data);
@@ -299,7 +300,31 @@ module.exports = function (passport) {
             res.send(data)
         })
     })
-    
+
+    router.post('/partlyEdit', isAuthenticated, function (req,res) {
+        var task = {};
+        task._id = req.body.task._id;
+        task.project = req.body.task.project;
+        task.title = req.body.task.title;
+        task.description = req.body.task.description;
+        task.status = req.body.task.status;
+        task.priority = req.body.task.priority;
+        task.creator = req.body.task.creator;
+        task.target = req.body.task.target;
+        console.log("fff");
+        console.log(task._id);
+        TaskHandler.partlyEdit(task, function (data) {
+            if (data) {
+                res.status(200).json({
+                    data: data
+                })
+                return;
+            }
+            console.log("some error asdfg");
+        })
+    })
+
+
     return router;
 }
 
