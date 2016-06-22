@@ -42,7 +42,9 @@ angular.module('myApp').factory('ProjectService',
             function createProjectLocal(project, id) {
                 project.assigned_members = [];
                 project._id = id;
-                allProjectList.push(project);
+                var proj_copy;
+                proj_copy = angular.copy(project)
+                allProjectList.push(proj_copy);
             }
             
             

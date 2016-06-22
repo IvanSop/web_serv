@@ -7,6 +7,8 @@ var Project = require('../models/project');
 var ProjectHandler = require('../db_handlers/project_handler');
 var UserHandler = require('../db_handlers/user_handler');
 var cnst = require('../models/CONSTANTS');
+var TaskHandler = require('../db_handlers/task_handler');
+var Task = require('../models/task');
 
 var isAuthenticated = function (req, res, next) {
     // if user is authenticated in the session, call the next() to call the next request handler 
@@ -214,19 +216,87 @@ module.exports = function (passport) {
         })
     })
 
-
-// fixme 'list' should be somewhere statically declared and as key value objects
+    // gets options for drop down list
     router.get('/getTaskStatusOptions', function (req, res) {
         console.log(cnst.statuses);
         res.status(200).json({
             list: cnst.statuses
         });
     });
-
-// fixme same as above
+    // same
     router.get('/getTaskPriorityOptions', function (req, res) {
         res.status(200).json({
             list: cnst.priorities
+        })
+    })
+
+    // TASK RELATED STUFF --------------------------------------------------------
+
+    router.post('/createTask', isAuthenticated, function (req, res) {
+        TaskHandler.taskExists(req.body.task, function (data) {
+            if (data) {
+                res.status(406).json({
+                    data: "Task with that name for that project already exists"
+                })
+                return;
+            }
+            var task = new Task();
+            task.project = req.body.task.project;
+            task.title = req.body.task.title;
+            task.description = req.body.task.description;
+            task.status = req.body.task.status;
+            task.priority = req.body.task.priority;
+            task.creator = req.body.task.creator;
+            task.target = req.body.task.target;
+
+            console.log('task ====');
+            console.log(task);
+            TaskHandler.createTask(task, function (data) {
+                if (data) {
+                    res.status(200).json({
+                        data: data
+                    })
+                    return;
+                }
+                console.log('put some error code here');
+            })
+        })
+    })
+    
+    router.post('/getAllTasks', isAuthenticated, function (req, res) {
+        TaskHandler.getAllTasks(function(data) {
+            res.send(data)
+        })
+    })
+    
+    
+    router.post('/editTask', isAuthenticated, function (req, res) {
+        console.log('edit task called');
+        var task = {};
+        task._id = req.body.task._id;
+        task.project = req.body.task.project;
+        task.title = req.body.task.title;
+        task.description = req.body.task.description;
+        task.status = req.body.task.status;
+        task.priority = req.body.task.priority;
+        task.creator = req.body.task.creator;
+        task.target = req.body.task.target;
+ 
+        TaskHandler.updateTask(task, function (data) {
+            if (data) {
+                res.status(200).json({
+                    data: data
+                })
+                return;
+            }
+            console.log("some error and send status back");
+        })
+    })
+
+
+    router.post('/deleteTask', isAuthenticated, isAdmin, function (req, res) {
+        TaskHandler.deleteTask(req.body.task, function (data) {
+            res.send(data)
         })
     })
     

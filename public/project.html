@@ -39,7 +39,7 @@
             </li>
         </ul>
         <br>
-        <div ng-show="{{pc.isAdmin}}">self
+        <div ng-show="{{pc.isAdmin}}">
             Add user: <input type="text" ng-model="pc.userToAdd"
                              typeahead="user.username as (user.username) for user in pc.allUsers | filter:{'username': $viewValue}">
             <input type="button" value="Add" ng-click="pc.addUser(pc.selectedProject.assigned_members, pc.userToAdd)">
@@ -57,7 +57,7 @@
 
 <br>
 <br>
-<div ng-include="'task.html'"></div>
+<!--<div ng-include="'task.html'"></div>-->
 
 <br>
 <br>

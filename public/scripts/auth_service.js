@@ -43,7 +43,7 @@ angular.module('myApp').factory('AuthService',
       .success(function (data) {
         if(data.status){
           user = data.status;
-          console.log(user);
+          // console.log(user);
         } else {
           user = false;
         }

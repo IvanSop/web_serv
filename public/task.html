@@ -1,14 +1,22 @@
+<html>
+<head>
+    <title>irrelevant</title>
+</head>
+<body>
 <div style="border: 1px solid green" ng-controller="taskController as tc">
-
+    {{tc.selectedId}}
     <ul>
-        <li ng-repeat="task in tc.allTasks">task.name</li>
+        <li ng-repeat="task in tc.allTasks" ng-click="tc.showDetails(task._id)">{{task.title}}</li>
     </ul>
-    <!-- Edit form-->
-    <form id="taskForm">
+    <div>-----------------------------------------------------------------</div>
+    <br>
+    <button type="button" value="Add new task" ng-click="tc.showNewForm = true; tc.selectedId = 'undefined'">Add new task</button>
+    <!-- Create new/edit form-->
+    <form id="taskForm" ng-show="tc.showNewForm">
         <label for="selectProject">Project:</label>
-        <select id="selectProject">
+        <select ng-model="tc.task.project" id="selectProject">
             <option value="">-- Select project --</option>
-            <option ng-repeat="project in tc.allProjects" value="project.name">{{project.name}}</option>
+            <option ng-repeat="project in tc.allProjects" value="{{project.name}}">{{project.name}}</option>
         </select>
         <br>
         <label for="taskTitle">Title</label>
@@ -34,12 +42,19 @@
         <br>
         <label for="taskTarget">Assigned to</label>
         <select id="taskTarget" ng-model="tc.task.target">
-            <option value="">-- Select user --</option>
+            <option value="">-- Unassigned --</option>
             <option ng-repeat="user in tc.allUsers" value="{{user.username}}">{{user.username}}</option>
         </select>
+        <br>
+        <input type="button" value="{{tc.selectedId == 'undefined' ? 'Create' : 'Edit'}}" ng-click="tc.selectedId == 'undefined' ? tc.createTask() : tc.editTask()">
+        <br>
+        <br>
+        <input type="button" value="Delete" ng-hide="tc.selectedId == 'undefined'" ng-click="tc.deleteTask()">
         <br>
         {{tc.task}}
         <br>
 
     </form>
 </div>
+</body>
+</html>
