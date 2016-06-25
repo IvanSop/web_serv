@@ -2,6 +2,6 @@
     <form>
         <textarea ng-model="cc.commentText" cols="40" rows="5"></textarea>
         <br>
-        <input type="button" ng-click="cc.postComment()" value="Post">
+        <input type="button" class="btn btn-default" ng-click="cc.postComment(); tc.showCommentForm();" value="Post">
     </form>
 </div>

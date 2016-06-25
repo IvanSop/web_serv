@@ -81,6 +81,7 @@ li.project-task-item {
     margin-bottom: 1%;
     font-size: 20pt;
     text-align: center;
+    width: 50%;
 }
 
 li.myselected {
@@ -114,6 +115,22 @@ form[name="project-task-details"] label {
 
 form[name="project-task-details"] input[name="delete-project-task"] {
     float: right;
+}
+
+li.comment-body {
+    background-color: rgba(57, 70, 225, 0.2);
+    width: 45%;
+    padding-left: 1%;
+}
+
+p.comment-text {
+    color: #f7f7f7;
+}
+
+p.comment-author-date {
+    color: #555;
+    font-size: 10pt;
+    font-style: italic;
 }
 
 .form-signin{

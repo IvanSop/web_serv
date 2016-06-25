@@ -16,7 +16,7 @@
     <br>
     <!-- Create new/edit form-->
     <form name="project-task-details" id="taskForm" ng-show="tc.showNewForm">
-        <h2>Task details</h2>
+        <h2>Task details:</h2>
         <label for="selectProject">Project:</label>
         <select ng-disabled="!tc.isAdmin && tc.selectedId != 'undefined'" ng-model="tc.task.project" id="selectProject">
             <option value="">-- Select project --</option>
@@ -59,23 +59,20 @@
         <input type="button" name="delete-project-task" class="btn btn-default" ng-hide="!tc.isAdmin && tc.selectedId == 'undefined'" value="Delete task" ng-click="tc.confirmDeletion()">
         <br>
         <br>
+
         <div id="commentSection" ng-controller="commentController as cc" ng-show="tc.selectedId != 'undefined'">
-            Comments:
-            <br>
-            list goes here
-            <br>
+            <h2>Comments:</h2>
             <ul>
-                <li ng-repeat="comment in cc.allComments | filter: {parent: tc.selectedId}">{{comment.text}} - {{comment.parent}} - {{comment.author}}</li>
+                <li class="comment-body" ng-repeat="comment in cc.allComments | filter: {parent: tc.selectedId}">
+                    <p class="comment-text">{{comment.text}}</p>
+                    <p class="comment-author-date">by <strong>{{comment.author}}</strong> at {{comment.date}}</p>
+                </li>
             </ul>
             <br>
-            <!--{{tc.task}}-->
-            <button ng-click="tc.showCommentForm();">New comment</button>
+            <button class="btn btn-default" ng-click="tc.showCommentForm();">Add comment</button>
             <br>
             <div ng-show="tc.commentFormVisible" ng-include="'comment_form.html'"></div>
         </div>
-        <br>
-        <button ng-click="tc.showNewForm = false;">Hide form</button>
-        <br>
         <!-- {{tc.task}} -->
 
     </form>
