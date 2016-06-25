@@ -9,7 +9,7 @@ angular.module('myApp').controller('logoutController',
                     .then(function () {
                         $location.path('/login');
                     });
-
+                        
             };
 
         }]);

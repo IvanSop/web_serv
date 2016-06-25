@@ -1,26 +1,13 @@
-<!DOCTYPE html>
-<html>
-<head>
-    <link rel="stylesheet" type="text/css" href="stylesheets/style.css">
-    <title>project</title>
-</head>
-<body>
+<div ng-include="'logout.html'"/>
+<a href="#/index" class="btn btn-default">Home</a>
 
-<div style="border: 1px solid red" ng-controller="projectController as pc">
-    <form class="form" ng-submit="pc.createProject()">
-        <div class="form-group" ng-show={{pc.isAdmin}}>
-            <label>Project name</label>
-            <input type="text" class="form-control" name="project_name" ng-model="pc.project.name" required>
-        </div>
-        <div>
-            <button type="submit" ng-show={{pc.isAdmin}} class="btn btn-default">Create</button>
-        </div>
-        <div ng-model="status" ng-show="pc.showMessage">{{pc.status}}</div>
-    </form>
-
+<div class="projects" ng-controller="projectController as pc">
+    <h1 ng-show={{!pc.isAdmin}}>My projects:</h1>
+    <h1 ng-show={{pc.isAdmin}}>All projects:</h1>    
+    
     <div>
         <ul>
-            <li ng-repeat="proj in pc.allProjects" ng-click="pc.setSelected(proj.name); pc.showDetails(proj.name)"
+            <li class="project-task-item" ng-repeat="proj in pc.allProjects" ng-click="pc.setSelected(proj.name); pc.showDetails(proj.name); pc.showNewForm = true;"
                 ng-class="{myselected: proj.name === pc.idSelectedItem}">{{proj.name}}
             </li>
         </ul>
@@ -30,29 +17,43 @@
     <br>
 
     <!-- edit project form -->
-    <form ng-show="!(pc.selectedProject == undefined)">
-        Name: <input ng-disabled="{{!pc.isAdmin}}" type="text" ng-model="pc.selectedProjectNew.name">
-        <div>Assigned members:</div>
+    <form name="project-task-details" ng-show="pc.showNewForm">
+        <h2>Project details</h2>
+        <label>Name:</label> <input ng-disabled="{{!pc.isAdmin}}" type="text" ng-model="pc.selectedProjectNew.name">
+        <div><label>Assigned members:</label></div>
         <ul>
-            <li ng-repeat="member in pc.selectedProject.assigned_members">{{member}} <a ng-show="{{pc.isAdmin}}"
-                                                                                        ng-click="pc.removeFromList(pc.selectedProject.assigned_members, member)">Remove</a>
+            <li ng-repeat="member in pc.selectedProject.assigned_members">{{member}}
+                <a ng-show="{{pc.isAdmin}}" ng-click="pc.removeFromList(pc.selectedProject.assigned_members, member)">Remove</a>
             </li>
         </ul>
         <br>
         <div ng-show="{{pc.isAdmin}}">
-            Add user: <input type="text" ng-model="pc.userToAdd"
+            <label>Add user:</label> <input type="text" ng-model="pc.userToAdd"
                              typeahead="user.username as (user.username) for user in pc.allUsers | filter:{'username': $viewValue}">
-            <input type="button" value="Add" ng-click="pc.addUser(pc.selectedProject.assigned_members, pc.userToAdd)">
+            <input type="button" class="btn btn-default" value="Add" ng-click="pc.addUser(pc.selectedProject.assigned_members, pc.userToAdd)">
         </div>
         <br>
         <!--<div ng-controller="taskController as tc">-->
 
         <!--</div>-->
         <br>
-        <input type="button" ng-show="pc.isAdmin" value="Edit" ng-click="pc.editClick()">
-        <br>
-        <input type="button" ng-show="pc.isAdmin" value="Delete project" ng-click="pc.deleteProject()">
+        <input type="button" class="btn btn-default" ng-show="pc.isAdmin" value="Save" ng-click="pc.editClick()">
+        <input type="button" class="btn btn-default" value="Cancel" ng-click="pc.showNewForm = false;">        
+        <input type="button" name="delete-project-task" class="btn btn-default" ng-show="pc.isAdmin" value="Delete project" ng-click="pc.confirmDeletion()">
     </form>
+    
+    
+    <div name="create-project" ng-show={{pc.isAdmin}}>
+        <h2>Create new project</h2>
+        <form class="form" ng-submit="pc.createProject()">
+            <div class="form-group">
+                <label>Project name:</label>
+                <input type="text" class="form-control" name="project_name" ng-model="pc.project.name" required>
+                <button id="create-project-btn" type="submit" ng-show={{pc.isAdmin}} class="btn btn-default">Create</button>
+            </div>
+            <div ng-model="status" ng-show="pc.showMessage">{{pc.status}}</div>
+        </form>
+    </div>
 </div>
 
 <br>
@@ -62,6 +63,3 @@
 <br>
 <br>
 <br>
-<div ng-include="'logout.html'"></div>
-</body>
-</html>

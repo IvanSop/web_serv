@@ -119,6 +119,13 @@ angular.module('myApp').controller('taskController',
                         console.log(response);
                     })
             }
+
+            self.confirmDeletion = function () {
+                if (confirm('Are you sure you want to delete selected task?')) {
+                    self.deleteTask();
+                } else {
+                }
+            }
             
             self.deleteTask = function () {
                 TaskService.deleteTask(self.selectedTask)

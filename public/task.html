@@ -1,38 +1,42 @@
-<html>
-<head>
-    <title>irrelevant</title>
-    <link rel="stylesheet" type="text/css" href="stylesheets/style.css">
-</head>
-<body>
-<div style="border: 1px solid green" ng-controller="taskController as tc">
-    {{tc.selectedId}}
+<div ng-include="'logout.html'"/>
+<a href="#/index" class="btn btn-default">Home</a>
+
+<div class="tasks" ng-controller="taskController as tc">
+    <!--{{tc.selectedId}} -->
+    <h1 ng-show={{!tc.isAdmin}}>Tasks on my projects:</h1>
+    <h1 ng-show={{tc.isAdmin}}>All tasks:</h1>
+
     <ul>
-        <li ng-repeat="task in tc.allTasks" ng-click="tc.showNewForm = true; tc.setSelected(task._id); tc.showDetails(task._id)" ng-class="{myselected: task._id === tc.idSelectedItem}">{{task.title}}</li>
+        <li class="project-task-item" ng-repeat="task in tc.allTasks" ng-click="tc.showNewForm = true; tc.setSelected(task._id); tc.showDetails(task._id)" ng-class="{myselected: task._id === tc.idSelectedItem}">{{task.title}}</li>
     </ul>
-    <div>-----------------------------------------------------------------</div>
+    
     <br>
-    <button type="button" value="Add new task" ng-click="tc.newClick(); tc.showNewForm = true; tc.selectedId = 'undefined'">Add new task</button>
+    <button type="button" value="Add new task" class="btn btn-default" ng-click="tc.newClick(); tc.showNewForm = true; tc.selectedId = 'undefined'">Add new task</button>
+    <br>
+    <br>
     <!-- Create new/edit form-->
-    <form id="taskForm" ng-show="tc.showNewForm">
+    <form name="project-task-details" id="taskForm" ng-show="tc.showNewForm">
+        <h2>Task details</h2>
         <label for="selectProject">Project:</label>
         <select ng-disabled="!tc.isAdmin && tc.selectedId != 'undefined'" ng-model="tc.task.project" id="selectProject">
             <option value="">-- Select project --</option>
             <option ng-repeat="project in tc.allProjects" value="{{project.name}}">{{project.name}}</option>
         </select>
         <br>
-        <label for="taskTitle">Title</label>
+        <label for="taskTitle">Title:</label>
         <input type="text" ng-disabled="!tc.isAdmin && tc.selectedId != 'undefined'" id="taskTitle" ng-model="tc.task.title" required>
         <br>
-        <label for="taskDescription">Description</label> <br>
+        <label for="taskDescription">Description:</label> <br>
         <textarea ng-disabled="!tc.isAdmin && tc.selectedId != 'undefined'" id="taskDescription" cols="40" rows="5" ng-model="tc.task.description"></textarea>
         <br>
-        <label for="selectPriority">Priority</label>
+        <label for="selectPriority">Priority:</label>
         <select id="selectPriority" ng-model="tc.task.priority">
             <option value="">-- Select priority --</option>
             <option ng-repeat="priority in tc.allTaskPriorities" value="{{priority.key}}">{{priority.value}}</option>
         </select>
         <br>
-        <label for="taskStatus">Status</label>
+        <br>
+        <label for="taskStatus">Status:</label>
         <select id="taskStatus" ng-model="tc.task.status">
             <option value="">-- Select status --</option>
             <option ng-repeat="status in tc.allTaskStatuses" value="{{status.key}}">{{status.value}}</option>
@@ -41,23 +45,21 @@
         <label for="taskCreator">Created by:</label>
         <span id="taskCreator" ng-bind="tc.task.creator">asdf</span>
         <br>
-        <label for="taskTarget">Assigned to</label>
+        <label for="taskTarget">Assigned to:</label>
         <select id="taskTarget" ng-model="tc.task.target">
             <option value="">-- Unassigned --</option>
             <option ng-repeat="user in tc.allUsers" value="{{user.username}}">{{user.username}}</option>
         </select>
         <br>
-        <input type="button" ng-hide="!tc.isAdmin && tc.selectedId != 'undefined'" value="{{tc.selectedId == 'undefined' ? 'Create' : 'Edit'}}" ng-click="tc.selectedId == 'undefined' ? tc.createTask() : tc.editTask()">
-        <input type="button" ng-show="!tc.isAdmin && tc.selectedId != 'undefined'" value="Edit2" ng-click="tc.partlyEdit()">
         <br>
         <br>
-        <input type="button" ng-hide="!tc.isAdmin && tc.selectedId != 'undefined'" value="Delete" ng-hide="tc.selectedId == 'undefined'" ng-click="tc.deleteTask()">
+        <input type="button" class="btn btn-default" ng-hide="!tc.isAdmin && tc.selectedId != 'undefined'" value="{{tc.selectedId == 'undefined' ? 'Create' : 'Save changes'}}" ng-click="tc.selectedId == 'undefined' ? tc.createTask() : tc.editTask()">
+        <input type="button" class="btn btn-default" ng-show="!tc.isAdmin && tc.selectedId != 'undefined'" value="Save changes" ng-click="tc.partlyEdit()">
+        <button class="btn btn-default" ng-click="tc.showNewForm = false;">Cancel</button>
+        <input type="button" name="delete-project-task" class="btn btn-default" ng-hide="!tc.isAdmin && tc.selectedId == 'undefined'" value="Delete task" ng-click="tc.confirmDeletion()">
+        
         <br>
-        {{tc.task}}
-        <button ng-click="tc.showNewForm = false;">Hide form</button>
-        <br>
+        <!-- {{tc.task}} -->
 
     </form>
 </div>
-</body>
-</html>

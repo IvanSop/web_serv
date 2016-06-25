@@ -1,11 +1,22 @@
-<h1>Yo!</h1>
+<div ng-include="'logout.html'"/>
+<h1 ng-controller="homepageController">Welcome, {{username}}</h1>
 
 <br>
-<a href="#project">Projects</a>
-<br>
-<a href="#task">Tasks</a>
-<br>
+<a href="#project" class="btn btn-default projects-btn">Projects</a>
+<a href="#task" class="btn btn-default tasks-btn">Tasks</a>
 <br>
 <br>
-<div ng-include="'logout.html'"></div>
+<br>
+
+<div class="task-widget">
+    <h2>Tasks in progress:</h2>
+    <!-- INCLUDE -->
+    <p>EXAMPLE 1</p>
+    <p>EXAMPLE 2</p>
+</div>
+
+<div class="task-widget">
+    <h2>To do tasks:</h2>
+    <!-- INCLUDE -->
+</div>
 

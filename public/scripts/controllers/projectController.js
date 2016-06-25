@@ -58,6 +58,13 @@ angular.module('myApp').controller('projectController',
                         console.log(response);
                     });
             }
+            
+            self.confirmDeletion = function () {
+                if (confirm('Are you sure you want to delete selected project?')) {
+                    self.deleteProject();
+                } else {
+                }
+            }
 
             self.deleteProject = function () {
                 ProjectService.deleteProject(self.selectedProject)
