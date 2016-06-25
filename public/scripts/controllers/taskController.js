@@ -1,6 +1,6 @@
 angular.module('myApp').controller('taskController',
-    ['$scope', '$http', '$timeout', 'AuthService', '$filter', 'ProjectService', 'TaskService',
-        function ($scope, $http, $timeout, AuthService, $filter, ProjectService, TaskService) {
+    ['$scope', '$http', '$timeout', 'AuthService', '$filter', 'ProjectService', 'TaskService', 'CommentService',
+        function ($scope, $http, $timeout, AuthService, $filter, ProjectService, TaskService, CommentService) {
             var self = this;
 
             self.init = function () {
@@ -12,7 +12,9 @@ angular.module('myApp').controller('taskController',
                 self.allUsers = [];
                 self.task = {};
                 self.task.creator = 'asdff';
-
+                
+                self.commentFormVisible = false;
+                
                 self.me = {}
 
                 self.allTasks = [];
@@ -99,6 +101,7 @@ angular.module('myApp').controller('taskController',
             }
 
             self.showDetails = function (id) {
+
                 var found = $filter('filter')(self.allTasks, {_id: id}, true);
                 if (found.length) {
                     self.selectedTask = found[0]
@@ -138,7 +141,10 @@ angular.module('myApp').controller('taskController',
                     })
             }
 
-
+            self.showCommentForm = function () {
+                self.commentFormVisible = !self.commentFormVisible;
+               
+            }
 
 
         }]);

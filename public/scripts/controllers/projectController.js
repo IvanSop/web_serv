@@ -39,6 +39,23 @@ angular.module('myApp').controller('projectController',
             // check if user is admin, used not to show certain content
             self.isAdmin = AuthService.isAdmin();
 
+            AuthService.getUserStatus()
+                .then(function (data) {
+                    self.me = data.data.status;
+                    console.log(self.me);
+                }, function (data) {
+                })
+
+            // for filterin projects
+            self.filteredProjs = function () {
+                return self.allProjects.filter(function (p) {
+                    return self.me.projects.indexOf(p._id) !== -1;
+                });
+            };
+
+
+
+
             // for selecting project in list, makes it red, FIXME: when name is changed, it dissapears
             self.idSelectedItem = null;
             self.setSelected = function (idSelectedItem) {

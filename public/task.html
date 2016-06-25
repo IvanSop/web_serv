@@ -7,11 +7,16 @@
 <div style="border: 1px solid green" ng-controller="taskController as tc">
     {{tc.selectedId}}
     <ul>
-        <li ng-repeat="task in tc.allTasks" ng-click="tc.showNewForm = true; tc.setSelected(task._id); tc.showDetails(task._id)" ng-class="{myselected: task._id === tc.idSelectedItem}">{{task.title}}</li>
+        <li ng-repeat="task in tc.allTasks"
+            ng-click="tc.showNewForm = true; tc.setSelected(task._id); tc.showDetails(task._id)"
+            ng-class="{myselected: task._id === tc.idSelectedItem}">{{task.title}}
+        </li>
     </ul>
     <div>-----------------------------------------------------------------</div>
     <br>
-    <button type="button" value="Add new task" ng-click="tc.newClick(); tc.showNewForm = true; tc.selectedId = 'undefined'">Add new task</button>
+    <button type="button" value="Add new task"
+            ng-click="tc.newClick(); tc.showNewForm = true; tc.selectedId = 'undefined'">Add new task
+    </button>
     <!-- Create new/edit form-->
     <form id="taskForm" ng-show="tc.showNewForm">
         <label for="selectProject">Project:</label>
@@ -21,10 +26,12 @@
         </select>
         <br>
         <label for="taskTitle">Title</label>
-        <input type="text" ng-disabled="!tc.isAdmin && tc.selectedId != 'undefined'" id="taskTitle" ng-model="tc.task.title" required>
+        <input type="text" ng-disabled="!tc.isAdmin && tc.selectedId != 'undefined'" id="taskTitle"
+               ng-model="tc.task.title" required>
         <br>
         <label for="taskDescription">Description</label> <br>
-        <textarea ng-disabled="!tc.isAdmin && tc.selectedId != 'undefined'" id="taskDescription" cols="40" rows="5" ng-model="tc.task.description"></textarea>
+        <textarea ng-disabled="!tc.isAdmin && tc.selectedId != 'undefined'" id="taskDescription" cols="40" rows="5"
+                  ng-model="tc.task.description"></textarea>
         <br>
         <label for="selectPriority">Priority</label>
         <select id="selectPriority" ng-model="tc.task.priority">
@@ -47,13 +54,31 @@
             <option ng-repeat="user in tc.allUsers" value="{{user.username}}">{{user.username}}</option>
         </select>
         <br>
-        <input type="button" ng-hide="!tc.isAdmin && tc.selectedId != 'undefined'" value="{{tc.selectedId == 'undefined' ? 'Create' : 'Edit'}}" ng-click="tc.selectedId == 'undefined' ? tc.createTask() : tc.editTask()">
-        <input type="button" ng-show="!tc.isAdmin && tc.selectedId != 'undefined'" value="Edit2" ng-click="tc.partlyEdit()">
+        <input type="button" ng-hide="!tc.isAdmin && tc.selectedId != 'undefined'"
+               value="{{tc.selectedId == 'undefined' ? 'Create' : 'Edit'}}"
+               ng-click="tc.selectedId == 'undefined' ? tc.createTask() : tc.editTask()">
+        <input type="button" ng-show="!tc.isAdmin && tc.selectedId != 'undefined'" value="Edit2"
+               ng-click="tc.partlyEdit()">
+
+        <input type="button" ng-hide="!tc.isAdmin && tc.selectedId != 'undefined'" value="Delete"
+               ng-hide="tc.selectedId == 'undefined'" ng-click="tc.deleteTask()">
         <br>
         <br>
-        <input type="button" ng-hide="!tc.isAdmin && tc.selectedId != 'undefined'" value="Delete" ng-hide="tc.selectedId == 'undefined'" ng-click="tc.deleteTask()">
+        <div id="commentSection" ng-controller="commentController as cc" ng-show="tc.selectedId != 'undefined'">
+            Comments:
+            <br>
+            list goes here
+            <br>
+            <ul>
+                <li ng-repeat="comment in cc.allComments | filter: {parent: tc.selectedId}">{{comment.text}} - {{comment.parent}} - {{comment.author}}</li>
+            </ul>
+            <br>
+            <!--{{tc.task}}-->
+            <button ng-click="tc.showCommentForm();">New comment</button>
+            <br>
+            <div ng-show="tc.commentFormVisible" ng-include="'comment_form.html'"></div>
+        </div>
         <br>
-        {{tc.task}}
         <button ng-click="tc.showNewForm = false;">Hide form</button>
         <br>
 

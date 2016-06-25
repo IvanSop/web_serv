@@ -20,7 +20,12 @@
 
     <div>
         <ul>
-            <li ng-repeat="proj in pc.allProjects" ng-click="pc.setSelected(proj.name); pc.showDetails(proj.name)"
+            <!--if regular user-->
+            <li ng-if="!pc.isAdmin" ng-repeat="proj in pc.filteredProjs(pc.allProjects)" ng-click="pc.setSelected(proj.name); pc.showDetails(proj.name)"
+                ng-class="{myselected: proj.name === pc.idSelectedItem}">{{proj.name}}
+            </li>
+            <!--if admin-->
+            <li ng-if="pc.isAdmin" ng-repeat="proj in pc.allProjects" ng-click="pc.setSelected(proj.name); pc.showDetails(proj.name)"
                 ng-class="{myselected: proj.name === pc.idSelectedItem}">{{proj.name}}
             </li>
         </ul>
