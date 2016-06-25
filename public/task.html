@@ -7,11 +7,7 @@
     <h1 ng-show={{tc.isAdmin}}>All tasks:</h1>
 
     <ul>
-        <li class="project-task-item" ng-repeat="task in tc.allTasks" ng-click="tc.showNewForm = true; tc.setSelected(task._id); tc.showDetails(task._id)" ng-class="{myselected: task._id === tc.idSelectedItem}">{{task.title}}</li>
-        <li ng-repeat="task in tc.allTasks"
-            ng-click="tc.showNewForm = true; tc.setSelected(task._id); tc.showDetails(task._id)"
-            ng-class="{myselected: task._id === tc.idSelectedItem}">{{task.title}}
-        </li>
+        <li class="project-task-item" ng-repeat="task in tc.allTasks" ng-click="tc.showNewForm = true; tc.setSelected(task._id); tc.showDetails(task._id)" ng-class="{myselected: task._id === tc.idSelectedItem}">{{task.title}}</li>        
     </ul>
     
     <br>
