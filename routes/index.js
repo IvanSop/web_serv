@@ -11,6 +11,39 @@ var TaskHandler = require('../db_handlers/task_handler');
 var Task = require('../models/task');
 var Comment = require('../models/comment');
 
+function getDateTime() {
+
+    var date = new Date();
+
+    var hour = date.getHours();
+    hour = (hour < 10 ? "0" : "") + hour;
+
+    var min  = date.getMinutes();
+    min = (min < 10 ? "0" : "") + min;
+
+    var sec  = date.getSeconds();
+    sec = (sec < 10 ? "0" : "") + sec;
+
+    var year = date.getFullYear();
+
+    var month = date.getMonth() + 1;
+    month = (month < 10 ? "0" : "") + month;
+
+    var day  = date.getDate();
+    day = (day < 10 ? "0" : "") + day;
+
+    return year + "/" + month + "/" + day + "|" + hour + ":" + min + ":" + sec;
+
+}
+
+
+
+
+
+
+
+
+
 var isAuthenticated = function (req, res, next) {
     // if user is authenticated in the session, call the next() to call the next request handler 
     // Passport adds this method to request object. A middleware is allowed to add properties to
@@ -38,6 +71,7 @@ var stripUser = function (user) {
     var strippedUser = {};
     strippedUser.username = user.username;
     strippedUser.type = user.type;
+    strippedUser.projects = user.projects;
     return strippedUser;
 }
 
@@ -301,6 +335,7 @@ module.exports = function (passport) {
         })
     })
 
+    // this is just for changing task priority and that kind of stuff, which user can also do
     router.post('/partlyEdit', isAuthenticated, function (req,res) {
         var task = {};
         task._id = req.body.task._id;
@@ -324,6 +359,38 @@ module.exports = function (passport) {
         })
     })
 
+
+    // comment stuff down here
+    router.post('/createComment', isAuthenticated, function (req, res) {
+        var comment = new Comment();
+        comment.author = req.body.comment.author;
+        comment.text = req.body.comment.text;
+        comment.parent = req.body.comment.parent;
+        comment.timestamp = getDateTime();
+        // timestamp should default to current time
+        comment.save(function (err, data) {
+            if (err) {
+                res.status(500).json({
+                    data: "something went wrong"
+                })
+                return;
+            }
+            res.status(200).json({
+                data: data
+            })
+        })
+
+
+    });
+    
+    
+    router.post('/getComments', isAuthenticated, function (req, res) {
+        Comment.find({}, function (err, data) {
+            res.status(200).json({
+                data: data
+            })
+        })
+    })
 
     return router;
 }

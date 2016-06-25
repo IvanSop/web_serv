@@ -7,7 +7,12 @@
     
     <div>
         <ul>
-            <li class="project-task-item" ng-repeat="proj in pc.allProjects" ng-click="pc.setSelected(proj.name); pc.showDetails(proj.name); pc.showNewForm = true;"
+            <!--if regular user-->
+            <li class="project-task-item" ng-if="!pc.isAdmin" ng-repeat="proj in pc.filteredProjs(pc.allProjects)" ng-click="pc.setSelected(proj.name); pc.showDetails(proj.name); pc.showNewForm = true;"
+                ng-class="{myselected: proj.name === pc.idSelectedItem}">{{proj.name}}
+            </li>
+            <!--if admin-->
+            <li class="project-task-item" ng-if="pc.isAdmin" ng-repeat="proj in pc.allProjects" ng-click="pc.setSelected(proj.name); pc.showDetails(proj.name); pc.showNewForm = true;"
                 ng-class="{myselected: proj.name === pc.idSelectedItem}">{{proj.name}}
             </li>
         </ul>

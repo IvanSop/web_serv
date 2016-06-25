@@ -8,9 +8,9 @@ var Task =  require('../models/task')
 
 var Comment = new mongoose.Schema({
 	parent: {type: mongoose.Schema.Types.ObjectId, ref:'Task'},
-	posted_by: {type: String, ref:'User'}, // or just string
+	author: {type: String, ref:'User'}, // or just string
 	text: String,
-	timestamp: { type: Date, default: Date.now } 
+	timestamp: String 
 });
 
 module.exports = mongoose.model('Comment', Comment);

@@ -105,5 +105,5 @@ angular.module('myApp').factory('TaskService',
                     })
                 return promise;
             }
-
+            
         }]);
