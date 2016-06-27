@@ -12,13 +12,13 @@ angular.module('myApp').controller('taskController',
                 self.allUsers = [];
                 self.task = {};
                 self.task.creator = 'asdff';
-                
+
                 self.commentFormVisible = false;
-                
+
                 self.me = {}
 
                 self.allTasks = [];
-                
+
                 self.isAdmin = AuthService.isAdmin()
 
                 // for coloring selected task
@@ -27,22 +27,21 @@ angular.module('myApp').controller('taskController',
                 AuthService.getUserStatus()
                     .then(function (data) {
                         self.task.creator = data.data.status.username;
-                        self.me = data.data.status.username;
+                        self.me = data.data.status;
                         console.log(data.data.status);
                     }, function (data) {
 
                     })
 
 
-
                 ProjectService.getAllProjects()
-                    .then(function(response) {
+                    .then(function (response) {
                         self.allProjects = ProjectService.getAllProjectList();
                     }, function (response) {
-                        
+
                     });
-                
-                
+
+
                 TaskService.getTaskStatusOptions()
                     .then(function (response) {
                         console.log("ff");
@@ -59,6 +58,7 @@ angular.module('myApp').controller('taskController',
                 AuthService.getAllUsers()
                     .then(function (response) {
                         self.allUsers = response;
+                        self.allUsers2 = angular.copy(self.allUsers);
                     }, function (response) {
                         // on failure
                     });
@@ -75,10 +75,46 @@ angular.module('myApp').controller('taskController',
             }
             self.init();
 
+            self.filterUsers = function () {
+                if (self.completeSelectedProject != undefined) {
+                    self.allUsers2 = self.allUsers.filter(function (p) {
+                        // console.log("PAS: ", self.completeSelectedProject);
+                        return self.completeSelectedProject.assigned_members.indexOf(p.username) !== -1;
+                    });
+                    console.log("sssdad ", self.allUsers2);
+                }
+            };
+
+
+            self.idToObjProj = function (currId) {
+                var found = $filter('filter')(self.allProjects, {_id: currId}, true);
+                console.log("pre if");
+                if (found.length) {
+                    self.completeSelectedProject = found[0];
+                    console.log("in if");
+                    console.log(self.completeSelectedProject);
+                } else {
+                    self.completeSelectedProject = undefined;
+                }
+            }
+            // clears selected project in drop down list when creating new project, just model that is needed for filtering ..
+            self.clearProj = function () {
+                self.completeSelectedProject = undefined;
+            }
+
+
+            // show only task for project on which user participates
+            self.filteredTasks = function () {
+                return self.allTasks.filter(function (p) {
+                    console.log("TASSKSK");
+                    console.log(p)
+                    return self.me.projects.indexOf(p.project) !== -1;
+                });
+            };
 
             self.newClick = function () {
                 self.task = {}
-                self.task.creator = angular.copy(self.me)
+                self.task.creator = angular.copy(self.me.username)
             }
 
             // for coloring selected task
@@ -88,16 +124,15 @@ angular.module('myApp').controller('taskController',
             };
 
 
-
             self.createTask = function () {
-               TaskService.createTask(angular.copy(self.task))
-                   .then(function(response) {
-                       console.log("created successfully");
-                       self.task = {}
-                       self.task.creator = angular.copy(self.me)
-                   }, function(response) {
-                       console.log("fail");
-                   })
+                TaskService.createTask(angular.copy(self.task))
+                    .then(function (response) {
+                        console.log("created successfully");
+                        self.task = {}
+                        self.task.creator = angular.copy(self.me.username)
+                    }, function (response) {
+                        console.log("fail");
+                    })
             }
 
             self.showDetails = function (id) {
@@ -112,7 +147,7 @@ angular.module('myApp').controller('taskController',
                     self.selectedTask = '';
                 }
             }
-            
+
             self.editTask = function () {
                 self.selectedTask = self.task;
                 TaskService.editTask(self.selectedTask)
@@ -129,14 +164,14 @@ angular.module('myApp').controller('taskController',
                 } else {
                 }
             }
-            
+
             self.deleteTask = function () {
                 TaskService.deleteTask(self.selectedTask)
                     .then(function (response) {
                         self.selectedTask = 'undefined';
                     })
             }
-                
+
 
             self.partlyEdit = function () {
                 self.selectedTask = self.task;
@@ -150,7 +185,7 @@ angular.module('myApp').controller('taskController',
 
             self.showCommentForm = function () {
                 self.commentFormVisible = !self.commentFormVisible;
-               
+
             }
 
 

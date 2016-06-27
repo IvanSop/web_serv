@@ -6,21 +6,26 @@
     <h1 ng-show={{!tc.isAdmin}}>Tasks on my projects:</h1>
     <h1 ng-show={{tc.isAdmin}}>All tasks:</h1>
 
-    <ul>
-        <li class="project-task-item" ng-repeat="task in tc.allTasks" ng-click="tc.showNewForm = true; tc.setSelected(task._id); tc.showDetails(task._id)" ng-class="{myselected: task._id === tc.idSelectedItem}">{{task.title}}</li>        
+    <!--for admin-->
+    <ul ng-if="tc.isAdmin">
+        <li class="project-task-item" ng-repeat="task in tc.allTasks" ng-click="tc.showNewForm = true; tc.setSelected(task._id); tc.showDetails(task._id); tc.idToObjProj(tc.task.project); tc.filterUsers();" ng-class="{myselected: task._id === tc.idSelectedItem}">{{task.title}}</li>
     </ul>
-    
+    <!--for regular-->
+    <ul ng-if="!tc.isAdmin">
+        <li class="project-task-item" ng-repeat="task in tc.filteredTasks(tc.allTasks)" ng-click="tc.showNewForm = true; tc.setSelected(task._id); tc.showDetails(task._id); tc.idToObjProj(tc.task.project); tc.filterUsers();" ng-class="{myselected: task._id === tc.idSelectedItem}">{{task.title}}</li>
+    </ul>
+
     <br>
-    <button type="button" value="Add new task" class="btn btn-default" ng-click="tc.newClick(); tc.showNewForm = true; tc.selectedId = 'undefined'">Add new task</button>
+    <button type="button" value="Add new task" class="btn btn-default" ng-click="tc.newClick(); tc.showNewForm = true; tc.selectedId = 'undefined'; tc.clearProj();">Add new task</button>
     <br>
     <br>
     <!-- Create new/edit form-->
     <form name="project-task-details" id="taskForm" ng-show="tc.showNewForm">
         <h2>Task details:</h2>
         <label for="selectProject">Project:</label>
-        <select ng-disabled="!tc.isAdmin && tc.selectedId != 'undefined'" ng-model="tc.task.project" id="selectProject">
+        <select ng-disabled="!tc.isAdmin && tc.selectedId != 'undefined'" ng-change="tc.idToObjProj(tc.task.project); tc.filterUsers();" ng-model="tc.task.project" id="selectProject">
             <option value="">-- Select project --</option>
-            <option ng-repeat="project in tc.allProjects" value="{{project.name}}">{{project.name}}</option>
+            <option ng-repeat="project in tc.allProjects" value="{{project._id}}">{{project.name}}</option>
         </select>
         <br>
         <label for="taskTitle">Title:</label>
@@ -48,7 +53,7 @@
         <label for="taskTarget">Assigned to:</label>
         <select id="taskTarget" ng-model="tc.task.target">
             <option value="">-- Unassigned --</option>
-            <option ng-repeat="user in tc.allUsers" value="{{user.username}}">{{user.username}}</option>
+            <option ng-repeat="user in tc.allUsers2" value="{{user.username}}">{{user.username}}</option>
         </select>
         <br>
         <br>
@@ -73,7 +78,9 @@
             <br>
             <div ng-show="tc.commentFormVisible" ng-include="'comment_form.html'"></div>
         </div>
-        <!-- {{tc.task}} -->
+         <!--{{tc.task}} -->
+        {{tc.task.project}}
+        {{tc.completeSelectedProject}}
 
     </form>
 </div>
