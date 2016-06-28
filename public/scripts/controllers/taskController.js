@@ -105,11 +105,13 @@ angular.module('myApp').controller('taskController',
 
             // show only task for project on which user participates
             self.filteredTasks = function () {
-                return self.allTasks.filter(function (p) {
-                    console.log("TASSKSK");
-                    console.log(p)
-                    return self.me.projects.indexOf(p.project) !== -1;
-                });
+                if (self.allTasks !== undefined) {
+                    return self.allTasks.filter(function (p) {
+                        console.log("TASSKSK");
+                        console.log(p)
+                        return self.me.projects.indexOf(p.project) !== -1;
+                    });
+                }
             };
 
             self.newClick = function () {

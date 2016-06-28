@@ -383,6 +383,14 @@ module.exports = function (passport) {
 
     });
     
+    router.post('/deleteComment', isAuthenticated, function (req, res) {
+        Comment.findOneAndRemove({_id: req.body.comment._id}, function (err, data) {
+            res.status(200).json({
+                data: data
+            })
+        })
+    })
+    
     
     router.post('/getComments', isAuthenticated, function (req, res) {
         Comment.find({}, function (err, data) {

@@ -121,6 +121,7 @@ li.comment-body {
     background-color: rgba(57, 70, 225, 0.2);
     width: 45%;
     padding-left: 1%;
+    border: 1px black solid;
 }
 
 p.comment-text {

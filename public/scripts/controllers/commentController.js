@@ -24,19 +24,32 @@ angular.module('myApp').controller('commentController',
 
             self.postComment = function () {
                 // thjis actually works, accessing parents variables
-                var comment = {};
-                comment.parent = $scope.tc.selectedId; // possible andgular.copy>
-                comment.text = self.commentText;
-                comment.author = $scope.tc.me;
+                var comment1 = {};
+                comment1.parent = $scope.tc.selectedId; // possible andgular.copy>
+                comment1.text = self.commentText;
+                comment1.author = $scope.tc.me.username;
+
                 // timestamp defaults to now
-                console.log(comment);
-                CommentService.createComment(comment)
+                CommentService.createComment(comment1)
                     .then(function (response) {
                         console.log("comment posted");
+                        console.log(response);
+                        var comment = {};
+                        comment.parent = response.parent;
+                        comment.author = response.author;
+                        comment.text = response.text;
+                        comment.timestamp = response.timestamp;
                     }, function (response) {
                         
                     })
                 
+            }
+            
+            self.deleteComment = function (comment) {
+                CommentService.deleteComment(comment)
+                    .then(function (response) {
+                        // --
+                    })
             }
             
         }]);

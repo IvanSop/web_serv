@@ -48,9 +48,11 @@ angular.module('myApp').controller('projectController',
 
             // for filterin projects
             self.filteredProjs = function () {
-                return self.allProjects.filter(function (p) {
-                    return self.me.projects.indexOf(p._id) !== -1;
-                });
+                if (self.allProjects != undefined && self.me != undefined) {
+                    return self.allProjects.filter(function (p) {
+                        return self.me.projects.indexOf(p._id) !== -1;
+                    });
+                }
             };
 
 

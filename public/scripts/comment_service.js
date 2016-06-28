@@ -9,7 +9,8 @@ angular.module('myApp').factory('CommentService',
             return ({
                 getAllCommentList: getAllCommentList,
                 createComment: createComment,
-                getComments: getComments
+                getComments: getComments,
+                deleteComment: deleteComment
             });
 
             function getAllCommentList() {
@@ -38,6 +39,22 @@ angular.module('myApp').factory('CommentService',
                         return response.data.data;
                     }, function (response) {
                         console.log('error creating comment ', response.data);
+                    });
+                return promise;
+            }
+
+            function deleteComment(comment) {
+                var promise = $http.post('/deleteComment', {comment: comment})
+                    .then(function (response) {
+                        for (var i=0; i<allCommentList.length; i++) {
+                            if (allCommentList[i]._id == response.data.data._id) {
+                                allCommentList.splice(i, 1);
+                                break;
+                            }
+                        }
+                        return response.data.data;
+                    }, function (response) {
+                        console.log("error deleting comment ", response.data);
                     });
                 return promise;
             }
