@@ -23,7 +23,7 @@
 
     <!-- edit project form -->
     <form name="project-task-details" ng-show="pc.showNewForm">
-        <h2>Project details</h2>
+        <h2>Project details:</h2>
         <label>Name:</label> <input ng-disabled="{{!pc.isAdmin}}" type="text" ng-model="pc.selectedProjectNew.name">
         <div><label>Assigned members:</label></div>
         <ul>
@@ -38,13 +38,22 @@
             <input type="button" class="btn btn-default" value="Add" ng-click="pc.addUser(pc.selectedProject.assigned_members, pc.userToAdd)">
         </div>
         <br>
-        <!--<div ng-controller="taskController as tc">-->
 
         <!--</div>-->
         <br>
         <input type="button" class="btn btn-default" ng-show="pc.isAdmin" value="Save" ng-click="pc.editClick()">
-        <input type="button" class="btn btn-default" value="Cancel" ng-click="pc.showNewForm = false;">        
+        <input type="button" class="btn btn-default" value="Cancel" ng-click="pc.showNewForm = false;">
         <input type="button" name="delete-project-task" class="btn btn-default" ng-show="pc.isAdmin" value="Delete project" ng-click="pc.confirmDeletion()">
+
+        <!-- tasks on selected project -->
+        <div ng-if="pc.selectedProject != 'undefined'">
+            <h2>Tasks on the project:</h2>
+            <ul>
+                <li class="project-task-item" ng-repeat="task in pc.allTasks | filter: {project: pc.selectedProject._id}">
+                    <a href="#task">{{task.title}} <p style="font-size: 10pt; color: grey;">(assigned to {{task.target}})</p></a>
+                </li>
+            </ul>
+        </div>
     </form>
     
     
