@@ -400,6 +400,14 @@ module.exports = function (passport) {
         })
     })
 
+    router.post('/editComment', isAuthenticated, function (req, res) {
+        Comment.findOneAndUpdate({_id: req.body.comment._id}, {$set:{text: req.body.comment.text, timestamp: getDateTime()}}, function (err, data) {
+            res.status(200).json({
+                data: data
+            })
+        })
+    })
+
     return router;
 }
 

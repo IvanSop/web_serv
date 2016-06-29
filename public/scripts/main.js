@@ -1,4 +1,4 @@
-var myApp = angular.module('myApp', ['ngRoute', 'ui.bootstrap']);
+var myApp = angular.module('myApp', ['ngRoute', 'ui.bootstrap', 'chart.js']);
 
 myApp.config(function ($routeProvider) {
     $routeProvider
@@ -34,6 +34,10 @@ myApp.config(function ($routeProvider) {
         })
         .when('/task', {
             templateUrl: 'task.html',
+            access: {restricted: true}
+        })
+        .when('/report', {
+            templateUrl: '/report.html',
             access: {restricted: true}
         })
         .otherwise({
