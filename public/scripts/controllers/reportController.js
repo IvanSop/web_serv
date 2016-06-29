@@ -41,14 +41,34 @@ angular.module('myApp').controller('reportController',
                     scales: {
                         yAxes: [{
                             ticks: {
-                                max: 1,
+                                max: 100,
                                 min: 0,
-                                stepSize: 0.5
+                                stepSize: 20
                             }
                         }]
                     }
                 }
             }
+
+            self.options2 = {
+                options: {
+                    title: {
+                        display: true,
+                        text: "Percentage of assigned tasks to user"
+                    },
+                    scales: {
+                        yAxes: [{
+                            ticks: {
+                                max: 100,
+                                min: 0,
+                                stepSize: 20
+                            }
+                        }]
+                    }
+                }
+            }
+            
+            
 
             var taskCount = 0;
 
@@ -76,18 +96,32 @@ angular.module('myApp').controller('reportController',
                         //console.log(taskCount);
                         //console.log(self.selectedProject.assigned_members);
                         var membersObj = [];
+
+                        // this is just for another type of report, same condition without status == done
+                        var membersObj2 = [];
+
                         for (var member in members) {
                             var membObj = {};
                             membObj.name = members[member];
                             membObj.completeTasks = [];
+
+                            // this is just for another type of report, same condition without status == done
+                            var membObj2 = {}
+                            membObj2.name = members[member];
+                            membObj2.ownTasks = [];
+
                             for (var task in self.tasks) {
                                 //console.log(self.tasks[task]);
                                 if (self.tasks[task].target == members[member] && self.tasks[task].status == 'done') {
                                     console.log("aa");
                                     membObj.completeTasks.push(self.tasks[task]);
                                 }
+                                if (self.tasks[task].target == members[member]) {
+                                    membObj2.ownTasks.push(self.tasks[task]);
+                                }
                             }
                             membersObj.push(membObj);
+                            membersObj2.push(membObj2);
 
                         }
                         // data for chart
@@ -96,7 +130,7 @@ angular.module('myApp').controller('reportController',
                         var innerData = [];
                         for (var i = 0; i < membersObj.length; i++) {
                             self.labels.push(membersObj[i].name);
-                            innerData.push((membersObj[i].completeTasks.length / taskCount));
+                            innerData.push((membersObj[i].completeTasks.length / taskCount) *100);
 
                             console.log("data ", innerData);
                             console.log("taskCount ", taskCount);
@@ -104,7 +138,16 @@ angular.module('myApp').controller('reportController',
                         }
                         self.data.push(innerData)
                         console.log(membersObj);
-
+                        // for 2nd chart
+                        self.labels2 = [];
+                        self.data2 = [];
+                        var innerData2 = [];
+                        for (var i = 0; i < membersObj2.length; i++) {
+                            self.labels2.push(membersObj2[i].name);
+                            innerData2.push((membersObj2[i].ownTasks.length / taskCount)*100);
+                        }
+                        self.data2.push(innerData2);
+                        
                     })
             }
 
