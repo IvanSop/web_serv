@@ -10,7 +10,8 @@ angular.module('myApp').factory('CommentService',
                 getAllCommentList: getAllCommentList,
                 createComment: createComment,
                 getComments: getComments,
-                deleteComment: deleteComment
+                deleteComment: deleteComment,
+                editComment: editComment
             });
 
             function getAllCommentList() {
@@ -56,6 +57,16 @@ angular.module('myApp').factory('CommentService',
                     }, function (response) {
                         console.log("error deleting comment ", response.data);
                     });
+                return promise;
+            }
+
+            function editComment(comment) {
+                var promise = $http.post('/editComment', {comment: comment})
+                    .then(function (response) {
+                        return response.data.data;
+                    }, function (response) {
+                        return response.data.data;
+                    })
                 return promise;
             }
 

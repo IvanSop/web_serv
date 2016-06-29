@@ -78,20 +78,16 @@ angular.module('myApp').controller('taskController',
             self.filterUsers = function () {
                 if (self.completeSelectedProject != undefined) {
                     self.allUsers2 = self.allUsers.filter(function (p) {
-                        // console.log("PAS: ", self.completeSelectedProject);
                         return self.completeSelectedProject.assigned_members.indexOf(p.username) !== -1;
                     });
-                    console.log("sssdad ", self.allUsers2);
                 }
             };
 
 
             self.idToObjProj = function (currId) {
                 var found = $filter('filter')(self.allProjects, {_id: currId}, true);
-                console.log("pre if");
                 if (found.length) {
                     self.completeSelectedProject = found[0];
-                    console.log("in if");
                     console.log(self.completeSelectedProject);
                 } else {
                     self.completeSelectedProject = undefined;
@@ -187,7 +183,6 @@ angular.module('myApp').controller('taskController',
 
             self.showCommentForm = function () {
                 self.commentFormVisible = !self.commentFormVisible;
-
             }
 
 

@@ -44,7 +44,7 @@ div.task-widget {
     border: 2px solid rgba(34, 55, 90, .5);
 }
 
-div[id='login'] {
+div[name="login-register-form"] {
     position:fixed;
     top: 50%;
     left: 50%;
@@ -73,7 +73,7 @@ label {
     margin-right: 15px;
 }
 
-li.project-task-item {
+.project-task-item {
     cursor: pointer;
     border: 2px, solid, #555;
     background-color: white;
@@ -121,7 +121,10 @@ li.comment-body {
     background-color: rgba(57, 70, 225, 0.2);
     width: 45%;
     padding-left: 1%;
+    padding-bottom: 1%;
+    padding-top: 1%;
     border: 1px black solid;
+    margin: 2%;
 }
 
 p.comment-text {

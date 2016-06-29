@@ -1,6 +1,6 @@
 angular.module('myApp').controller('projectController',
-    ['$scope', '$http', '$timeout', 'AuthService', '$filter', 'ProjectService',
-        function ($scope, $http, $timeout, AuthService, $filter, ProjectService) {
+    ['$scope', '$http', '$timeout', 'AuthService', 'TaskService', '$filter', 'ProjectService',
+        function ($scope, $http, $timeout, AuthService, TaskService, $filter, ProjectService) {
 
             var self = this;
 
@@ -26,6 +26,13 @@ angular.module('myApp').controller('projectController',
                     // make a copy, when we want to edit it
                     self.selectedProjectNew = angular.copy(self.selectedProject);
                     //console.log($scope.selectedProject);
+                    TaskService.getAllTasks()
+                    .then(function(response){
+                        self.allTasks = TaskService.getAllTaskList();
+                        console.log(self.allTasks);
+                        console.log(self.selectedProject._id);
+
+                    });
                 } else {
                     self.selectedProject = 'Not found';
                 }
@@ -61,7 +68,7 @@ angular.module('myApp').controller('projectController',
             // for selecting project in list, makes it red, FIXME: when name is changed, it dissapears
             self.idSelectedItem = null;
             self.setSelected = function (idSelectedItem) {
-                //console.log(idSelectedItem)
+                console.log(idSelectedItem);
                 self.idSelectedItem = idSelectedItem;
             };
 
@@ -109,7 +116,7 @@ angular.module('myApp').controller('projectController',
                     self.allProjects = ProjectService.getAllProjectList();
                     //self.allProjects = ProjectService.allProjectList;
                     //angular.copy(ProjectService.getAllProjectList(), self.allProjects)
-                    //console.log(ProjectService.getAllProjectList());
+                    console.log(ProjectService.getAllProjectList());
                 }, function (response) {
                     // on failure
                 });

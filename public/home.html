@@ -11,14 +11,14 @@
 <div class="task-widget" ng-controller="widgetController as wc">
     <h2>Tasks in progress:</h2>
     <ul>
-        <li ng-repeat="task in wc.allTasks | filter: {status: 'inProgress'}">{{task.title}}</li>
+        <li class="project-task-item" ng-repeat="task in wc.allTasks | filter: {status: 'inProgress'}"><a href="#task">{{task.title}}</a></li>
     </ul>
 </div>
 
 <div class="task-widget" ng-controller="widgetController as wc">
     <h2>To do tasks:</h2>
     <ul>
-        <li ng-repeat="task in wc.allTasks | filter: {status: 'todo'}">{{task.title}}</li>
+        <li class="project-task-item" ng-repeat="task in wc.allTasks | filter: {status: 'todo'}"><a href="#task">{{task.title}}</a></li>
     </ul>
 </div>
 

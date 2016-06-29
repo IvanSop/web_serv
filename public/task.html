@@ -8,11 +8,15 @@
 
     <!--for admin-->
     <ul ng-if="tc.isAdmin">
-        <li class="project-task-item" ng-repeat="task in tc.allTasks" ng-click="tc.showNewForm = true; tc.setSelected(task._id); tc.showDetails(task._id); tc.idToObjProj(tc.task.project); tc.filterUsers();" ng-class="{myselected: task._id === tc.idSelectedItem}">{{task.title}}</li>
+        <li class="project-task-item" ng-repeat="task in tc.allTasks"
+        ng-click="tc.showNewForm = true; tc.setSelected(task._id); tc.showDetails(task._id); tc.idToObjProj(tc.task.project); tc.filterUsers();"
+        ng-class="{myselected: task._id === tc.idSelectedItem}">{{task.title}}</li>        
     </ul>
     <!--for regular-->
     <ul ng-if="!tc.isAdmin">
-        <li class="project-task-item" ng-repeat="task in tc.filteredTasks(tc.allTasks)" ng-click="tc.showNewForm = true; tc.setSelected(task._id); tc.showDetails(task._id); tc.idToObjProj(tc.task.project); tc.filterUsers();" ng-class="{myselected: task._id === tc.idSelectedItem}">{{task.title}}</li>
+        <li class="project-task-item" ng-repeat="task in tc.filteredTasks(tc.allTasks)"
+        ng-click="tc.showNewForm = true; tc.setSelected(task._id); tc.showDetails(task._id); tc.idToObjProj(tc.task.project); tc.filterUsers();"
+        ng-class="{myselected: task._id === tc.idSelectedItem}">{{task.title}}</li>
     </ul>
 
     <br>
@@ -61,7 +65,7 @@
         <input type="button" class="btn btn-default" ng-hide="!tc.isAdmin && tc.selectedId != 'undefined'" value="{{tc.selectedId == 'undefined' ? 'Create' : 'Save changes'}}" ng-click="tc.selectedId == 'undefined' ? tc.createTask() : tc.editTask()">
         <input type="button" class="btn btn-default" ng-show="!tc.isAdmin && tc.selectedId != 'undefined'" value="Save changes" ng-click="tc.partlyEdit()">
         <button class="btn btn-default" ng-click="tc.showNewForm = false;">Cancel</button>
-        <input type="button" name="delete-project-task" class="btn btn-default" ng-hide="!tc.isAdmin && tc.selectedId == 'undefined'" value="Delete task" ng-click="tc.confirmDeletion()">
+        <input type="button" name="delete-project-task" class="btn btn-default" ng-hide="!tc.isAdmin" value="Delete task" ng-click="tc.confirmDeletion(); tc.showNewForm = false;">
         <br>
         <br>
 
@@ -69,12 +73,21 @@
             <h2>Comments:</h2>
             <ul>
                 <li class="comment-body" ng-repeat="comment in cc.allComments | filter: {parent: tc.selectedId}">
-                    <p class="comment-text">{{comment.text}}</p>
+                    <textarea name="edit-comment-field" ng-if="comment.editToggled">{{comment.text}}</textarea>
+                    <p ng-if="!comment.editToggled" class="comment-text">{{comment.text}}</p>                    
                     <p class="comment-author-date">by <strong>{{comment.author}}</strong> at {{comment.timestamp}}</p>
+                    
+                    <button name="edit-comment-btn" ng-if="comment.editToggled" class="btn btn-default" ng-click="comment.editToggled = !comment.editToggled;">Save</button>
+                    <button class="btn btn-default" ng-if="comment.editToggled" ng-click="comment.editToggled = !comment.editToggled;">Cancel</button>
                     <!--for admin-->
-                    <button ng-if="tc.isAdmin" class="btn btn-default" ng-click="cc.deleteComment(comment)">Delete</button>
+                    <button name="edit-comment-btn" ng-if="tc.isAdmin && !comment.editToggled" class="btn btn-default" ng-click="comment.editToggled = !comment.editToggled;">Edit</button>
+                    <button ng-if="tc.isAdmin" class="btn btn-default" ng-click="cc.confirmDeletion(comment)">Delete</button>
                     <!--for user-->
-                    <button ng-if="tc.me.username == comment.author && !tc.isAdmin" class="btn btn-default" ng-click="cc.deleteComment(comment)">Delete</button>
+                    <button ng-if="tc.me.username == comment.author && !tc.isAdmin && !comment.editToggled" class="btn btn-default" ng-click="comment.editToggled = !comment.editToggled;">Edit</button>
+                    <button ng-if="tc.me.username == comment.author && !tc.isAdmin" class="btn btn-default" ng-click="cc.confirmDeletion(comment)">Delete</button>
+                    <!--for both user and admin-->       
+                    
+                                        
                 </li>
             </ul>
             <br>
