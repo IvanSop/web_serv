@@ -73,17 +73,17 @@
             <h2>Comments:</h2>
             <ul>
                 <li class="comment-body" ng-repeat="comment in cc.allComments | filter: {parent: tc.selectedId}">
-                    <textarea name="edit-comment-field" ng-if="comment.editToggled">{{comment.text}}</textarea>
+                    <textarea name="edit-comment-field" ng-if="comment.editToggled" ng-model="cc.editedComment">{{comment.text}}</textarea>
                     <p ng-if="!comment.editToggled" class="comment-text">{{comment.text}}</p>                    
                     <p class="comment-author-date">by <strong>{{comment.author}}</strong> at {{comment.timestamp}}</p>
                     
-                    <button name="edit-comment-btn" ng-if="comment.editToggled" class="btn btn-default" ng-click="comment.editToggled = !comment.editToggled;">Save</button>
+                    <button name="edit-comment-btn" ng-if="comment.editToggled" class="btn btn-default" ng-click="comment.editToggled = !comment.editToggled; comment.text = cc.editedComment; cc.editComment(comment);">Save</button>
                     <button class="btn btn-default" ng-if="comment.editToggled" ng-click="comment.editToggled = !comment.editToggled;">Cancel</button>
                     <!--for admin-->
-                    <button name="edit-comment-btn" ng-if="tc.isAdmin && !comment.editToggled" class="btn btn-default" ng-click="comment.editToggled = !comment.editToggled;">Edit</button>
+                    <button name="edit-comment-btn" ng-if="tc.isAdmin && !comment.editToggled" class="btn btn-default" ng-click="comment.editToggled = !comment.editToggled; cc.editedComment = comment.text;">Edit</button>
                     <button ng-if="tc.isAdmin" class="btn btn-default" ng-click="cc.confirmDeletion(comment)">Delete</button>
                     <!--for user-->
-                    <button ng-if="tc.me.username == comment.author && !tc.isAdmin && !comment.editToggled" class="btn btn-default" ng-click="comment.editToggled = !comment.editToggled;">Edit</button>
+                    <button ng-if="tc.me.username == comment.author && !tc.isAdmin && !comment.editToggled" class="btn btn-default" ng-click="comment.editToggled = !comment.editToggled; cc.editedComment = comment.text;">Edit</button>
                     <button ng-if="tc.me.username == comment.author && !tc.isAdmin" class="btn btn-default" ng-click="cc.confirmDeletion(comment)">Delete</button>
                     <!--for both user and admin-->       
                     
@@ -95,9 +95,6 @@
             <br>
             <div ng-show="tc.commentFormVisible" ng-include="'comment_form.html'"></div>
         </div>
-         <!--{{tc.task}} -->
-        {{tc.task.project}}
-        {{tc.completeSelectedProject}}
 
     </form>
 </div>

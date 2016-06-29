@@ -4,7 +4,7 @@
 <br>
 <br>
 <div ng-controller="reportController as rc">
-    <label>Create report showing percentage of done tasks for users for project: </label>
+    <label>Create reports for project: </label>
     <select ng-model="rc.selectedProject" ng-options="project.name for project in rc.allProjects"
             ng-change="rc.getTasksAndMembers()"></select>
 
@@ -14,6 +14,8 @@
             chart-data="rc.data" chart-labels="rc.labels" chart-series="rc.series" chart-colors="['#2D5F5F','#14F9A1','#72FD1F','#000000']" >
     </canvas>
 
+    <br>
+    <br>
     <br>
 
     <canvas id="bar2" class="chart chart-bar graph-display" chart-options="rc.options2.options"

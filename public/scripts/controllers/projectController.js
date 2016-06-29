@@ -53,7 +53,7 @@ angular.module('myApp').controller('projectController',
                 }, function (data) {
                 })
 
-            // for filterin projects
+            // for filtering projects
             self.filteredProjs = function () {
                 if (self.allProjects != undefined && self.me != undefined) {
                     return self.allProjects.filter(function (p) {

@@ -103,8 +103,6 @@ angular.module('myApp').controller('taskController',
             self.filteredTasks = function () {
                 if (self.allTasks !== undefined) {
                     return self.allTasks.filter(function (p) {
-                        console.log("TASSKSK");
-                        console.log(p)
                         return self.me.projects.indexOf(p.project) !== -1;
                     });
                 }
@@ -123,6 +121,10 @@ angular.module('myApp').controller('taskController',
 
 
             self.createTask = function () {
+                if (self.task.project == '' || self.task.project == undefined) {
+                    console.log("empty");
+                    return;
+                }
                 TaskService.createTask(angular.copy(self.task))
                     .then(function (response) {
                         console.log("created successfully");

@@ -137,6 +137,11 @@ p.comment-author-date {
     font-style: italic;
 }
 
+canvas.chart {
+    background-color: rgb(230, 230, 230);
+    width: 100%;
+}
+
 .form-signin{
     max-width: 330px;
     padding: 15px;
