@@ -1,5 +1,10 @@
-<div ng-controller="reportController as rc">
+<div ng-include="'logout.html'"/>
+<a href="#/" class="btn btn-default">Home</a>
 
+<br>
+<br>
+<div ng-controller="reportController as rc">
+    <label>Create report showing percentage of done tasks for users for project: </label>
     <select ng-model="rc.selectedProject" ng-options="project.name for project in rc.allProjects"
             ng-change="rc.getTasksAndMembers()"></select>
 
